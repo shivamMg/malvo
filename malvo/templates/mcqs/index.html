@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% if question_list %}
+    <div>
+    {% for question in question_list %}
+        <div>
+          <a href="{% url 'mcqs:mcq' question.question_no %}">Question {{ question.question_no }}</a>
+          <pre>{{ question.question_text|truncatewords:30 }}</pre>
+        </div>
+    {% endfor %}
+    </div>
+{% else %}
+    <p>No MCQs available</p>
+{% endif %}
+{% endblock %}

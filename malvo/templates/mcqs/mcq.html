@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% if error_message %}
+<p><strong>{{ error_message }}</strong></p>
+{% endif %}
+
+<p>Question {{ question.question_no }}</p>
+<h4><pre>{{ question.question_text }}</pre></h4>
+
+<form action="{% url 'mcqs:answer' question.question_no %}" method="post">
+{% csrf_token %}
+{% for choice in question.choice_set.all %}
+    <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
+    <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
+{% endfor %}
+
+<input type="submit" value="Submit">
+{% endblock %}
