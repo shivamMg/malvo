@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Question(models.Model):
     """MCQ Question with question number and text"""
     def incre_question_count():
@@ -18,7 +19,7 @@ class Question(models.Model):
 
 class Choice(models.Model):
     """Choice tied to a Question"""
-    question = models.ForeignKey(Question)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
     choice_text = models.CharField(max_length=1000)
 
     def __str__(self):
