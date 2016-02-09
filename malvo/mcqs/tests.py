@@ -57,14 +57,42 @@ class QuestionViewTests(TestCase):
         """
         If no option is selected as an answer, display an error message.
         """
-        question = create_question("Another question, is it?", [
-            "Yes, another one",
-            "Nope, it's the same",
-            "What are you talking about",
+        question = create_question("Dummy question, is it?", [
+            "Yes it is",
+            "Nope, it is genuine",
         ])
         response = self.client.post(reverse('mcqs:answer', args=(
             question.question_no,
         )), {})
-        self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['error_message'],
                          "No option selected")
+
+    def test_answer_view_for_redirection_to_next_question(self):
+        """
+        If a question is answered, redirect to next question.
+        """
+        question_one = create_question("Dummy question, is it?", [
+            "Yes it is",
+            "Nope, it is genuine",
+        ])
+        create_question("Dummy question, is it?", [
+            "Yes it is",
+            "Nope, it is genuine",
+        ])
+        response = self.client.post(reverse('mcqs:answer', args=(
+            question_one.question_no,
+        )), {'choice': 1})
+        self.assertRedirects(response, '/mcqs/2/')
+
+    def test_answer_view_for_redirection_to_index(self):
+        """
+        If the question answered is the last question, redirect to index.
+        """
+        question = create_question("Dummy question, is it?", [
+            "Yes it is",
+            "Nope, it is genuine",
+        ])
+        response = self.client.post(reverse('mcqs:answer', args=(
+            question.question_no,
+        )), {'choice': 1})
+        self.assertRedirects(response, '/mcqs/')
