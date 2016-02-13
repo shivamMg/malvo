@@ -2,11 +2,13 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.views import generic
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 
 from .models import Question, Choice
 
 
-class IndexView(generic.ListView):
+class IndexView(LoginRequiredMixin, generic.ListView):
     template_name = 'mcqs/index.html'
     context_object_name = 'question_list'
 
@@ -14,11 +16,12 @@ class IndexView(generic.ListView):
         return Question.objects.order_by('question_no')
 
 
-class McqView(generic.DetailView):
+class McqView(LoginRequiredMixin, generic.DetailView):
     model = Question
     template_name = 'mcqs/mcq.html'
 
 
+@login_required
 def answer(request, question_no):
     question_count = Question.objects.count()
     question = get_object_or_404(Question, question_no=question_no)

@@ -7,6 +7,11 @@
 <body>
     <ul>
         <li><a href="{% url 'mcqs:index' %}">mcqs</a></li>
+        {% if user.is_authenticated %}
+            <li><a href="{% url 'teams:logout' %}">logout</a></li>
+        {% else %}
+            <li><a href="{% url 'teams:login' %}">login</a></li>
+        {% endif %}
     </ul>
     <hr>
 
