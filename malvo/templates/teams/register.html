@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if form.errors %}
+<p>Your username and password didn't match. Please try again.</p>
+{% endif %}
+
+{% if next %}
+    {% if user.is_authenticated %}
+    <p>Your account doesn't have access to this page. To proceed,
+    please login with an account that has access.</p>
+    {% else %}
+    <p>Please login to see this page.</p>
+    {% endif %}
+{% endif %}
+
+<form method="post" action="{% url 'teams:register' %}">
+{% csrf_token %}
+
+<table>
+{% for field in team_form %}
+    <tr>
+        <td>{{ field.label_tag }}</td>
+        <td>{{ field }}</td>
+        <td>{{ field.errors }}</td>
+    </tr>
+{% endfor %}
+</table>
+
+{% for form in team_member_formset %}
+<table>
+    <tr>
+        <th>Member {{ forloop.counter }}</th>
+    </tr>
+    {% for field in form %}
+        <tr>
+            <td>{{ field.label_tag }}</td>
+            <td>{{ field }}</td>
+            <td>{{ field.errors }}</td>
+        </tr>
+    {% endfor %}
+</table>
+{% endfor %}
+
+{{ team_member_formset.management_form }}
+
+<input type="submit" value="register" />
+<input type="hidden" name="next" value="{{ next }}" />
+</form>
+
+{% endblock %}
