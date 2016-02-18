@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 
 from .models import Question, Choice
-
+from .dump_mcqs import dump_mcqs_to_file
 
 class IndexView(LoginRequiredMixin, generic.ListView):
     template_name = 'mcqs/index.html'
@@ -16,9 +16,10 @@ class IndexView(LoginRequiredMixin, generic.ListView):
         return Question.objects.order_by('question_no')
 
 
-class McqView(LoginRequiredMixin, generic.DetailView):
-    model = Question
-    template_name = 'mcqs/mcq.html'
+# @login_required
+def mcq(request):
+    dump_mcqs_to_file()
+    return render(request, 'mcqs/mcq_on_json.html')
 
 
 @login_required

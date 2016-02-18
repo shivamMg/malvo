@@ -3,6 +3,7 @@ from django.core.urlresolvers import reverse
 
 from .forms import TeamCreationForm, TeamMemberCreationFormSet
 
+
 def register_team(request):
     if request.method == 'GET':
         team_form = TeamCreationForm()
