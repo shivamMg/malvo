@@ -1,3 +1,24 @@
 {% load staticfiles %}
 
-<script type="text/javascript" src="{% static 'mcqs/mcq_dump.json' %}"></script>
+{% block stylesheets %}
+<link rel="stylesheet" href="{% static 'mcqs/style.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div>
+  <input type="button" id="prev_question" value="Previous">
+  <input type="button" id="next_question" value="Next">
+</div><br>
+<div>
+  <div>
+    Q<span id="question_no"></span>.
+    <span id="question_text"></span>
+  </div>
+  <div id="choices"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'mcqs/main.js' %}"></script>
+{% endblock %}

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Malvo</title>
+    {% block stylesheets %}{% endblock %}
 </head>
 <body>
     <ul>
@@ -17,5 +18,7 @@
     <hr>
 
     {% block content %}{% endblock %}
+
+  {% block scripts %}{% endblock %}
 </body>
 </html>

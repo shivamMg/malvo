@@ -1,0 +1,10 @@
+.choices {
+  padding: 4px;
+  background: #dcdcdc;
+  margin: 4px;
+  cursor: pointer;
+}
+
+.choices:hover {
+  background: #c0c0c0;
+}
