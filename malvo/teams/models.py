@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 
 class TeamManager(BaseUserManager):
     """
-    Manager for team.
+    Manager for a Team.
     """
 
     def create_user(self, team_name, password):
@@ -36,7 +36,7 @@ class TeamManager(BaseUserManager):
 
 class Team(AbstractBaseUser):
     """
-    Team with a team name.
+    Team with a Team name.
     """
     team_name = models.SlugField(_('team name'), max_length=25, unique=True)
 
@@ -80,7 +80,7 @@ class Team(AbstractBaseUser):
 
 class TeamMember(models.Model):
     """
-    Team Member belonging to a team.
+    Team Member belonging to a Team.
     """
     full_name = models.CharField(_('full name'), max_length=25)
     mobile_no = models.CharField(_('mobile number'), max_length=15)
@@ -102,3 +102,16 @@ class TeamMember(models.Model):
 
     def __str__(self):
         return self.full_name
+
+
+class TeamMcqAnswer(models.Model):
+    """
+    Answer to an MCQ by a Team.
+    """
+    question_no = models.IntegerField(unique=True)
+    # Text of the answer/choice selected
+    choice_text = models.CharField(max_length=1000)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "Q{0} Ans:{1}".format(self.question_no, self.choice_text)

@@ -12,8 +12,8 @@ def extract_mcqs():
     for question in Question.objects.all():
         choices = []
         # Extract choices
-        for c in question.choice_set.all():
-            choices.append(c.choice_text)
+        for choice in question.choice_set.all():
+            choices.append(choice.choice_text)
 
         data.append({
             'qno': question.question_no,
@@ -25,7 +25,7 @@ def extract_mcqs():
 
 def dump_mcqs_to_file():
     """
-    Writes to MCQs JSON file in `static` directory, if it does not exist.
+    Writes to MCQs JSON file in `static/mcqs` directory, if it does not exist.
     """
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     filename = 'mcq_dump.json'

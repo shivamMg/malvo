@@ -5,20 +5,26 @@
 {% endblock %}
 
 {% block content %}
+<div><input type="button" id="submit_all" value="Submit all"></div><br>
+
 <div>
   <input type="button" id="prev_question" value="Previous">
   <input type="button" id="next_question" value="Next">
 </div><br>
+
 <div>
   <div>
     Q<span id="question_no"></span>.
-    <span id="question_text"></span>
+    <pre id="question_text"></pre>
   </div>
   <div id="choices"></div>
 </div>
 {% endblock %}
 
 {% block scripts %}
+<script type="text/javascript">
+  var csrfmiddlewaretoken = "{{ csrf_token }}";
+</script>
 <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'mcqs/main.js' %}"></script>
 {% endblock %}

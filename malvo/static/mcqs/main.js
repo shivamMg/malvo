@@ -2,12 +2,13 @@ var McqObj = {
   questions: [],
   /* `len` would be the total number of questions */
   len: 0,
+  /* `curQuesIndex` is the index of current question */
   curQuesIndex: 0,
   switchNextQues: '',
   switchPrevQues: ''
 };
 
-/* `Answers` contains question number as keys and answered choice as value */
+/* `Answers` contains question numbers as keys and answered choices as values */
 var Answers = {};
 
 $(document).ready(function() {
@@ -16,13 +17,12 @@ $(document).ready(function() {
     McqObj.questions = data;
     McqObj.len = data.length;
     McqObj.curQuesIndex = 0;
-    console.log("Questions loaded.");
+
     switchQuestion(0);
     /* Initialize `Answers` */
     for (i = 1; i <= McqObj.len; i++) {
       Answers[String(i)] = "";
     }
-    console.log(Answers);
   });
 
   $("#next_question").click(function() {
@@ -67,4 +67,12 @@ $(document).ready(function() {
     Answers[curQuesNo] = selectedChoice;
   };
   
+  $("#submit_all").click(function() {
+    var data = Answers;
+    data.csrfmiddlewaretoken = csrfmiddlewaretoken;
+    $.post("/mcqs/answer/", data, function() {
+      alert("data loaded");
+    });
+  });
+
 });
