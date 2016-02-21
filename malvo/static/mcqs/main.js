@@ -12,17 +12,34 @@ var McqObj = {
 var Answers = {};
 
 $(document).ready(function() {
+  /* Hide questions panel */
+  var panel = $("#questions_panel");
+  panel.hide();
 
   $.getJSON("/static/mcqs/mcq_dump.json", function(data) {
+    console.log("MCQs downloaded.");
+
     McqObj.questions = data;
     McqObj.len = data.length;
     McqObj.curQuesIndex = 0;
 
     switchQuestion(0);
-    /* Initialize `Answers` */
-    for (i = 1; i <= McqObj.len; i++) {
-      Answers[String(i)] = "";
+    /* 
+     * - Initialize `Answers` with empty answers.
+     * - Create panel buttons.
+     */
+    var panelButtons = "";
+    for (i = 0; i < McqObj.len; i++) {
+      Answers[String(i+1)] = "";
+
+      var panelButton = '<input type="button" onclick="switchQuestion(' + String(i) + ')" value="' + String(i+1) + '"/>';
+      panelButtons += panelButton;
     }
+    /* Add buttons to panel */
+    panel.html(panelButtons);
+
+  }).fail(function() {
+    console.log("Error occured while downloading MCQs.");
   });
 
   $("#next_question").click(function() {
@@ -36,43 +53,69 @@ $(document).ready(function() {
   McqObj.switchNextQues = function() {
     var i = McqObj.curQuesIndex;
     i = (i == McqObj.len-1) ? 0 : ++i;
-    McqObj.curQuesIndex = i;
     switchQuestion(i);
   };
 
   McqObj.switchPrevQues = function() {
     var i = McqObj.curQuesIndex;
     i = (i === 0) ? McqObj.len-1 : --i;
-    McqObj.curQuesIndex = i;
     switchQuestion(i);
   };
 
-  function switchQuestion(index) {
+  window.switchQuestion = function switchQuestion(index) {
     var choices = "";
-    var curQues = McqObj.questions[McqObj.curQuesIndex];
+    var question = McqObj.questions[index];
 
-    $("#question_no").text(curQues.qno);
-    $("#question_text").text(curQues.qtext);
+    $("#question_no").text(question.qno);
+    $("#question_text").text(question.qtext);
     
-    $.each(curQues.choices, function(i, choice){
+    $.each(question.choices, function(i, choice){
       var div = '<div class="choices" onclick="selectChoice(this)">' + choice + '</div>';
       choices +=  div;
     });
     $("#choices").html(choices);
-  }
+
+    McqObj.curQuesIndex = index;
+  };
 
   window.selectChoice = function selectChoice(ele) {
     var selectedChoice = $(ele).text();
-    var curQuesNo = String(McqObj.curQuesIndex + 1);
+    var curQuesNo = String(McqObj.curQuesIndex+1);
     Answers[curQuesNo] = selectedChoice;
   };
   
   $("#submit_all").click(function() {
+    /* Check if all questions have been solved (No answer is empty) */
+    var allAnswersSolved = true;
+    $.each(Answers, function(qno, answer) {
+      if (answer === "") {
+        allAnswersSolved = false;
+        return;
+      }
+    });
+
+    if (allAnswersSolved === false) {
+      var submitAnswers = confirm("You have not answered all questions. Would you still like to continue uploading answers?");
+      /* If user cancels confirmation, don't upload answers */
+      if (submitAnswers === false) {
+        return;
+      }
+    }
+
     var data = Answers;
     data.csrfmiddlewaretoken = csrfmiddlewaretoken;
     $.post("/mcqs/answer/", data, function() {
-      alert("data loaded");
+      console.log("Answers uploaded.");
+      alert("Answers uploaded.");
+    }).fail(function() {
+      console.log("Error occured while uploading answers.");
+      alert("Error occured while uploading answers.");
     });
+  });
+
+  /* Toggle Questions Panel */
+  $("#panel_toggle_button").click(function() {
+    panel.slideToggle("slow");
   });
 
 });

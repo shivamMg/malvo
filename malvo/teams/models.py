@@ -108,10 +108,13 @@ class TeamMcqAnswer(models.Model):
     """
     Answer to an MCQ by a Team.
     """
-    question_no = models.IntegerField(unique=True)
+    question_no = models.IntegerField()
     # Text of the answer/choice selected
     choice_text = models.CharField(max_length=1000)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('question_no', 'team',)
 
     def __str__(self):
         return "Q{0} Ans:{1}".format(self.question_no, self.choice_text)

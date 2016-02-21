@@ -29,14 +29,20 @@ def answer(request):
         # Get Team object from logged-in team
         team = Team.objects.get(team_name=request.user)
 
+        # Check if team has answered questions before
+        # If yes, delete the answers
+        if team.teammcqanswer_set.exists():
+            team.teammcqanswer_set.all().delete()
+
         # Save answers for the Team
         for qno in range(1, question_count+1):
-            answer = TeamMcqAnswer(
+            # Answer/Choice text
+            choice_text = request.POST.get(str(qno))
+
+            TeamMcqAnswer.objects.create(
                 question_no=qno,
-                choice_text=request.POST.get(str(qno)),
+                choice_text=choice_text,
                 team=team
             )
-            answer.save()
-        return HttpResponseRedirect(reverse('mcqs:index'))
-    else:
-        return HttpResponseRedirect(reverse('mcqs:index'))
+
+    return HttpResponseRedirect(reverse('mcqs:index'))

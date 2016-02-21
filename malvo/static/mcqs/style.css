@@ -8,3 +8,7 @@
 .choices:hover {
   background: #c0c0c0;
 }
+
+#questions_panel {
+  padding: 10px;
+}
