@@ -9,6 +9,10 @@
   background: #c0c0c0;
 }
 
+.selected {
+  background: #a0a0a0;
+}
+
 #questions_panel {
   padding: 10px;
 }

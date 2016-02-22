@@ -69,8 +69,14 @@ $(document).ready(function() {
     $("#question_no").text(question.qno);
     $("#question_text").text(question.qtext);
     
-    $.each(question.choices, function(i, choice){
-      var div = '<div class="choices" onclick="selectChoice(this)">' + choice + '</div>';
+    $.each(question.choices, function(i, choice) {
+      /* Highlight the choice if it has already been selected as answer */
+      if (choice == Answers[question.qno]) {
+        div = '<div class="choices selected" onclick="selectChoice(this)">' + choice + '</div>';
+      } else {
+        div = '<div class="choices" onclick="selectChoice(this)">' + choice + '</div>';
+      }
+
       choices +=  div;
     });
     $("#choices").html(choices);
@@ -82,6 +88,8 @@ $(document).ready(function() {
     var selectedChoice = $(ele).text();
     var curQuesNo = String(McqObj.curQuesIndex+1);
     Answers[curQuesNo] = selectedChoice;
+    /* Switch to next question */
+    McqObj.switchNextQues();
   };
   
   $("#submit_all").click(function() {
