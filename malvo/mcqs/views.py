@@ -1,8 +1,11 @@
+import json
+
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 
 from .models import Question
 from .dump_mcqs import dump_mcqs_to_file
@@ -17,12 +20,29 @@ class IndexView(LoginRequiredMixin, generic.ListView):
         return Question.objects.order_by('question_no')
 
 
-# @login_required
+@login_required
 def mcq(request):
+    question_count = Question.objects.count()
     dump_mcqs_to_file()
-    return render(request, 'mcqs/mcq_on_json.html')
+
+    team = Team.objects.get(team_name=request.user)
+    # `answers` contains question numbers as keys and answered choices as values.
+    # Both keys and values are strings.
+    # If no questions were answered previously choices are marked empty strings.
+    answers = {}
+
+    if team.teammcqanswer_set.exists():
+        for answer in team.teammcqanswer_set.all():
+            answers[str(answer.question_no)] = answer.choice_text
+    else:
+        answers = {str(i): "" for i in range(1, question_count+1)}
+
+    return render(request, 'mcqs/mcq_on_json.html', {
+        'previous_answers': json.dumps(answers,)}
+    )
 
 
+@login_required
 def answer(request):
     if request.method == 'POST':
         question_count = Question.objects.count()

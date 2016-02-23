@@ -8,9 +8,6 @@ var McqObj = {
   switchPrevQues: ''
 };
 
-/* `Answers` contains question numbers as keys and answered choices as values */
-var Answers = {};
-
 $(document).ready(function() {
   /* Hide questions panel */
   var panel = $("#questions_panel");
@@ -30,8 +27,6 @@ $(document).ready(function() {
      */
     var panelButtons = "";
     for (i = 0; i < McqObj.len; i++) {
-      Answers[String(i+1)] = "";
-
       var panelButton = '<input type="button" onclick="switchQuestion(' + String(i) + ')" value="' + String(i+1) + '"/>';
       panelButtons += panelButton;
     }
@@ -39,7 +34,7 @@ $(document).ready(function() {
     panel.html(panelButtons);
 
   }).fail(function() {
-    console.log("Error occured while downloading MCQs.");
+    console.log("Error occured while downloading MCQs. Try reloading page.");
   });
 
   $("#next_question").click(function() {

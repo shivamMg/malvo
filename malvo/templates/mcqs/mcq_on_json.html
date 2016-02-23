@@ -1,3 +1,4 @@
+{% extends 'base.html' %}
 {% load staticfiles %}
 
 {% block stylesheets %}
@@ -30,7 +31,14 @@
 
 {% block scripts %}
 <script type="text/javascript">
+  /* CSRF Token */
   var csrfmiddlewaretoken = "{{ csrf_token }}";
+  
+  /* Previous answers
+   * `Answers` contains question numbers as keys and answered choices as values.
+   * Both keys and values are strings.
+   */
+  var Answers = JSON.parse("{{ previous_answers|escapejs }}");
 </script>
 <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'mcqs/main.js' %}"></script>
