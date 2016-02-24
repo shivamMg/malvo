@@ -3,8 +3,6 @@ import json
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from django.views import generic
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 
 from .models import Question
@@ -12,20 +10,46 @@ from .dump_mcqs import dump_mcqs_to_file
 from teams.models import Team, TeamMcqAnswer
 
 
-class IndexView(LoginRequiredMixin, generic.ListView):
-    template_name = 'mcqs/index.html'
-    context_object_name = 'question_list'
+@login_required
+def index(request):
+    team = Team.objects.get(team_name=request.user)
+    question_count = Question.objects.count()
 
-    def get_queryset(self):
-        return Question.objects.order_by('question_no')
+    # Previous answers given by team
+    answer_list = team.teammcqanswer_set.order_by('question_no')
+
+    # Stores key-value pairs of question numbers and answer statuses.
+    # If answer is empty, status is 'Unsolved', else 'Solved'.
+    answer_status_dict = {}
+
+    # If no answers provided, mark all 'Unsolved'
+    if not answer_list:
+        answer_status_dict = {
+            qno: 'Unsolved' for qno in range(1, question_count+1)}
+    else:
+        for ans in answer_list:
+            if ans.choice_text == '':
+                answer_status_dict[ans.question_no] = 'Unsolved'
+            else:
+                answer_status_dict[ans.question_no] = 'Solved'
+
+    question_list = []
+    for ques in Question.objects.order_by('question_no'):
+        qno = ques.question_no
+        ques.status = answer_status_dict[qno]
+        question_list.append(ques)
+
+    return render(request, 'mcqs/index.html', {
+        'question_list': question_list}
+    )
 
 
 @login_required
 def mcq(request):
+    team = Team.objects.get(team_name=request.user)
     question_count = Question.objects.count()
     dump_mcqs_to_file()
 
-    team = Team.objects.get(team_name=request.user)
     # `answers` contains question numbers as keys and answered choices as values.
     # Both keys and values are strings.
     # If no questions were answered previously choices are marked empty strings.
@@ -45,9 +69,9 @@ def mcq(request):
 @login_required
 def answer(request):
     if request.method == 'POST':
-        question_count = Question.objects.count()
         # Get Team object from logged-in team
         team = Team.objects.get(team_name=request.user)
+        question_count = Question.objects.count()
 
         # Check if team has answered questions before
         # If yes, delete the answers

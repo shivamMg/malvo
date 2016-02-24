@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div><a href="{% url 'mcqs:mcq' %}">START</a></div><br>
 {% if question_list %}
     <div>
     {% for question in question_list %}
         <div>
-          <a href="{% url 'mcqs:mcq' %}">Question {{ question.question_no }}</a>
+          <div>Question {{ question.question_no }} [{{ question.status }}]</div>
           <pre>{{ question.question_text|truncatewords:30 }}</pre>
         </div>
     {% endfor %}
