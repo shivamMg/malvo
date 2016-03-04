@@ -38,8 +38,14 @@ class Team(AbstractBaseUser):
     """
     Team with a Team name.
     """
-    team_name = models.SlugField(_('team name'), max_length=25, unique=True)
+    PROG_LANGS = (
+        ('C', 'C'),
+        ('J', 'Java'),
+    )
 
+    team_name = models.SlugField(_('team name'), max_length=25, unique=True)
+    lang_pref = models.CharField(_('programming language preference'),
+                                 max_length=1, default=None, choices=PROG_LANGS)
     is_active = models.BooleanField(_('active'), default=True)
     is_admin = models.BooleanField(_('admin status'), default=False)
 

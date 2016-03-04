@@ -16,9 +16,13 @@ class TeamCreationForm(forms.ModelForm):
 
     class Meta:
         model = Team
-        fields = ('team_name',)
+        fields = ('team_name', 'lang_pref')
         labels = {
             'team_name': 'Team Name',
+            'lang_pref': 'Programming Language',
+        }
+        widgets = {
+            'lang_pref': forms.RadioSelect,
         }
 
     def clean_password2(self):
