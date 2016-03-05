@@ -8,7 +8,6 @@ class TeamManager(BaseUserManager):
     """
     Manager for a Team.
     """
-
     def create_user(self, team_name, password):
         """
         Creates and saves team with given `team_name` and `password`.
@@ -45,7 +44,7 @@ class Team(AbstractBaseUser):
 
     team_name = models.SlugField(_('team name'), max_length=25, unique=True)
     lang_pref = models.CharField(_('programming language preference'),
-                                 max_length=1, default=None, choices=PROG_LANGS)
+                                 max_length=1, choices=PROG_LANGS, default='0')
     is_active = models.BooleanField(_('active'), default=True)
     is_admin = models.BooleanField(_('admin status'), default=False)
 

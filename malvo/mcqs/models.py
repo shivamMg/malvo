@@ -3,15 +3,17 @@ from django.db import models
 
 class Question(models.Model):
     """MCQ Question with question number and text"""
-    def incre_question_count():
-        """Return incremented question count"""
-        count = Question.objects.count()
-        if count == None:
-            count = 0
-        return count + 1
+    PROG_LANGS = (
+        ('C', 'C'),
+        ('J', 'Java'),
+    )
 
-    question_no = models.IntegerField(unique=True, default=incre_question_count)
+    language = models.CharField(max_length=1, choices=PROG_LANGS)
+    question_no = models.IntegerField()
     question_text = models.TextField()
+
+    class Meta:
+        unique_together = (('language', 'question_no'),)
 
     def __str__(self):
         return "Q{0}. {1}".format(self.question_no, self.question_text)

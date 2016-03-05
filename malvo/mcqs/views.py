@@ -6,14 +6,19 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 
 from .models import Question
-from .dump_mcqs import dump_mcqs_to_file
+from .dump_mcqs import dump_mcqs_to_file, JAVA_FILENAME, C_FILENAME
 from teams.models import Team, TeamMcqAnswer
+
+
+def team_and_question_list(team_name):
+    team = Team.objects.get(team_name=team_name)
+    questions = Question.objects.filter(language=team.lang_pref)
+    return (team, questions)
 
 
 @login_required
 def index(request):
-    team = Team.objects.get(team_name=request.user)
-    question_count = Question.objects.count()
+    team, questions = team_and_question_list(request.user)
 
     # Previous answers given by team
     answer_list = team.teammcqanswer_set.order_by('question_no')
@@ -25,7 +30,7 @@ def index(request):
     # If no answers provided, mark all 'Unsolved'
     if not answer_list:
         answer_status_dict = {
-            qno: 'Unsolved' for qno in range(1, question_count+1)}
+            qno: 'Unsolved' for qno in range(1, questions.count()+1)}
     else:
         for ans in answer_list:
             if ans.choice_text == '':
@@ -34,7 +39,7 @@ def index(request):
                 answer_status_dict[ans.question_no] = 'Solved'
 
     question_list = []
-    for ques in Question.objects.order_by('question_no'):
+    for ques in questions.order_by('question_no'):
         qno = ques.question_no
         ques.status = answer_status_dict[qno]
         question_list.append(ques)
@@ -46,8 +51,7 @@ def index(request):
 
 @login_required
 def mcq(request):
-    team = Team.objects.get(team_name=request.user)
-    question_count = Question.objects.count()
+    team, questions = team_and_question_list(request.user)
     dump_mcqs_to_file()
 
     # `answers` contains question numbers as keys and answered choices as values.
@@ -59,10 +63,16 @@ def mcq(request):
         for answer in team.teammcqanswer_set.all():
             answers[str(answer.question_no)] = answer.choice_text
     else:
-        answers = {str(i): "" for i in range(1, question_count+1)}
+        answers = {str(i): "" for i in range(1, questions.count()+1)}
+
+    if team.lang_pref == 'J':
+        mcq_filename = JAVA_FILENAME
+    else:
+        mcq_filename = C_FILENAME
 
     return render(request, 'mcqs/mcq_on_json.html', {
-        'previous_answers': json.dumps(answers,)}
+        'previous_answers': json.dumps(answers,),
+        'mcq_filename': mcq_filename,}
     )
 
 
@@ -70,8 +80,7 @@ def mcq(request):
 def answer(request):
     if request.method == 'POST':
         # Get Team object from logged-in team
-        team = Team.objects.get(team_name=request.user)
-        question_count = Question.objects.count()
+        team, questions = team_and_question_list(request.user)
 
         # Check if team has answered questions before
         # If yes, delete the answers
@@ -79,7 +88,7 @@ def answer(request):
             team.teammcqanswer_set.all().delete()
 
         # Save answers for the Team
-        for qno in range(1, question_count+1):
+        for qno in range(1, questions.count()+1):
             # Answer/Choice text
             choice_text = request.POST.get(str(qno))
 

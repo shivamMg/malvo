@@ -39,6 +39,7 @@
    * Both keys and values are strings.
    */
   var Answers = JSON.parse("{{ previous_answers|escapejs }}");
+  var mcqFilepath = "/static/mcqs/" + "{{ mcq_filename }}";
 </script>
 <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'mcqs/main.js' %}"></script>

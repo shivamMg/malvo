@@ -13,7 +13,7 @@ $(document).ready(function() {
   var panel = $("#questions_panel");
   panel.hide();
 
-  $.getJSON("/static/mcqs/mcq_dump.json", function(data) {
+  $.getJSON(mcqFilepath, function(data) {
     console.log("MCQs downloaded.");
 
     McqObj.questions = data;
