@@ -5,12 +5,10 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class TeamManager(BaseUserManager):
-    """
-    Manager for a Team.
-    """
+
     def create_user(self, team_name, password):
         """
-        Creates and saves team with given `team_name` and `password`.
+        Creates and saves team with given `team_name` and `password`
         """
         if not team_name:
             raise ValueError('Team must have a team name')
@@ -22,7 +20,7 @@ class TeamManager(BaseUserManager):
 
     def create_superuser(self, team_name, password):
         """
-        Creates a superuser team.
+        Creates a superuser team
         """
         team = self.create_user(
             team_name=team_name,
@@ -35,7 +33,7 @@ class TeamManager(BaseUserManager):
 
 class Team(AbstractBaseUser):
     """
-    Team with a Team name.
+    Team with a team name and language preference
     """
     PROG_LANGS = (
         ('C', 'C'),
@@ -85,7 +83,7 @@ class Team(AbstractBaseUser):
 
 class TeamMember(models.Model):
     """
-    Team Member belonging to a Team.
+    Team Member belonging to a Team
     """
     full_name = models.CharField(_('full name'), max_length=25)
     mobile_no = models.CharField(_('mobile number'), max_length=15)
@@ -111,7 +109,7 @@ class TeamMember(models.Model):
 
 class TeamMcqAnswer(models.Model):
     """
-    Answer to an MCQ by a Team.
+    Answer to an MCQ by a Team
     """
     question_no = models.IntegerField()
     # Text of the answer/choice selected

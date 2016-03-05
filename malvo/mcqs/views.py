@@ -11,6 +11,10 @@ from teams.models import Team, TeamMcqAnswer
 
 
 def team_and_question_list(team_name):
+    """
+    Returns Team object for `team_name` and questions list as per
+    team language preference
+    """
     team = Team.objects.get(team_name=team_name)
     questions = Question.objects.filter(language=team.lang_pref)
     return (team, questions)
@@ -23,8 +27,8 @@ def index(request):
     # Previous answers given by team
     answer_list = team.teammcqanswer_set.order_by('question_no')
 
-    # Stores key-value pairs of question numbers and answer statuses.
-    # If answer is empty, status is 'Unsolved', else 'Solved'.
+    # Store key-value pairs of question numbers and answer statuses
+    # If answer is empty, status is 'Unsolved', else 'Solved'
     answer_status_dict = {}
 
     # If no answers provided, mark all 'Unsolved'
@@ -54,14 +58,14 @@ def mcq(request):
     team, questions = team_and_question_list(request.user)
     dump_mcqs_to_file()
 
-    # `answers` contains question numbers as keys and answered choices as values.
-    # Both keys and values are strings.
-    # If no questions were answered previously choices are marked empty strings.
+    # Store key-value pairs of question numbers and answered choices
+    # Both keys and values are strings
     answers = {}
 
     if team.teammcqanswer_set.exists():
         for answer in team.teammcqanswer_set.all():
             answers[str(answer.question_no)] = answer.choice_text
+    # If no questions were answered previously, choices are marked empty strings
     else:
         answers = {str(i): "" for i in range(1, questions.count()+1)}
 
@@ -79,17 +83,15 @@ def mcq(request):
 @login_required
 def answer(request):
     if request.method == 'POST':
-        # Get Team object from logged-in team
         team, questions = team_and_question_list(request.user)
 
         # Check if team has answered questions before
-        # If yes, delete the answers
+        # If yes, delete all of them
         if team.teammcqanswer_set.exists():
             team.teammcqanswer_set.all().delete()
 
-        # Save answers for the Team
+        # Save new answers
         for qno in range(1, questions.count()+1):
-            # Answer/Choice text
             choice_text = request.POST.get(str(qno))
 
             TeamMcqAnswer.objects.create(

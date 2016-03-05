@@ -1,3 +1,4 @@
+# Older views. No longer required.
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import generic

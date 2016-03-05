@@ -7,9 +7,8 @@ from .models import Team, TeamMember
 
 class TeamCreationForm(forms.ModelForm):
     """
-    Create team from team_name and password.
+    Create team from team_name and password
     """
-
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Password Confirmation',
                                 widget=forms.PasswordInput)
@@ -46,7 +45,6 @@ class TeamChangeForm(forms.ModelForm):
     the user, but replaces the password field with admin's
     password hash display field.
     """
-
     password = ReadOnlyPasswordHashField()
 
     class Meta:

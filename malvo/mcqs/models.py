@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Question(models.Model):
-    """MCQ Question with question number and text"""
+    """MCQ with question number, text and language type"""
     PROG_LANGS = (
         ('C', 'C'),
         ('J', 'Java'),
