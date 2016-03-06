@@ -3,7 +3,18 @@ __pycache__/
 *.py[cod]
 
 # Virtualenv
-venv/*
+venv/
+.env
 
-# Bower Components
+# Bower components
 bower_components/
+
+# Configurations directory
+conf/
+
+# Generated database
+malvo/db.sqlite3
+
+# Generated files
+malvo/static/mcqs/c_mcq_dump.json
+malvo/static/mcqs/java_mcq_dump.json
