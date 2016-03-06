@@ -6,27 +6,31 @@
 {% endblock %}
 
 {% block content %}
-<div>
-  <input type="button" id="panel_toggle_button" value="Toggle Panel" />
-  <div id="questions_panel"></div>
-</div>
 
-<div>
-  <input type="button" id="submit_all" value="Submit all">
-</div><br>
-
-<div>
-  <input type="button" id="prev_question" value="Previous">
-  <input type="button" id="next_question" value="Next">
-</div><br>
-
-<div>
-  <div>
-    Q<span id="question_no"></span>.
-    <pre id="question_text"></pre>
+<div class="ui grid">
+  <div class="computer only one wide column"></div>
+  
+  <div class="eleven wide column">
+    <div class="ui segment">
+      <div>
+        Q<span id="question_no"></span>.
+        <soan id="question_text"></span>
+      </div><br>
+      <div id="choices"></div>
+    </div>
   </div>
-  <div id="choices"></div>
+
+  <div class="three wide column">
+    <div id="questions_panel" class="ui segment inverted"></div>
+    <div>
+      <button class="ui left basic attached button" id="prev_question">Previous</button>
+      <button class="ui right basic attached button" id="next_question">Next</button>
+    </div>
+    <br>
+    <button class="ui fluid button" id="submit_all">Submit all</button>
+  </div>
 </div>
+
 {% endblock %}
 
 {% block scripts %}
@@ -41,6 +45,5 @@
   var Answers = JSON.parse("{{ previous_answers|escapejs }}");
   var mcqFilepath = "/static/mcqs/" + "{{ mcq_filename }}";
 </script>
-<script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'mcqs/main.js' %}"></script>
+<script type="text/javascript" src="{% static 'mcqs/script.js' %}"></script>
 {% endblock %}

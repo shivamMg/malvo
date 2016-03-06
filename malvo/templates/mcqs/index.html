@@ -1,17 +1,31 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div><a href="{% url 'mcqs:mcq' %}">START</a></div><br>
-{% if question_list %}
-    <div>
-    {% for question in question_list %}
-        <div>
-          <div>Question {{ question.question_no }} [{{ question.status }}]</div>
-          <pre>{{ question.question_text|truncatewords:30 }}</pre>
+
+<div class="ui container">
+  <div class="ui two column stackable grid">
+    <div class="column">
+    {% if question_list %}
+      <div class="ui segments">
+      {% for question in question_list %}
+        <div class="ui segment header">
+          Question {{ question.question_no }}&nbsp;&nbsp;&nbsp;
+          {% if question.status == "Unsolved" %}
+            <a class="ui red tag label">{{ question.status }}</a>
+          {% else %}
+            <a class="ui teal tag label">{{ question.status }}</a>
+          {% endif %}
         </div>
-    {% endfor %}
+      {% endfor %}
+      </div>
+    {% else %}
+      <h2>No information to display.</h2>
+    {% endif %}
     </div>
-{% else %}
-    <p>No MCQs available</p>
-{% endif %}
+
+    <div class="center aligned column">
+      <a class="ui primary button huge" href="{% url 'mcqs:mcq' %}">ENTER</a>
+    </div>
+  </div>
+</div>
 {% endblock %}

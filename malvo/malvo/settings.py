@@ -140,7 +140,7 @@ STATICFILES_DIRS = [
 # Login Redirect URL
 
 LOGIN_REDIRECT_URL = '/mcqs/'
-LOGIN_URL = '/teams/login/'
+LOGIN_URL = '/team/login/'
 
 
 # Auth user model

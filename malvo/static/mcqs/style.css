@@ -1,18 +1,33 @@
-.choices {
-  padding: 4px;
-  background: #dcdcdc;
-  margin: 4px;
+.choice {
   cursor: pointer;
 }
 
-.choices:hover {
-  background: #c0c0c0;
+.choice:hover {
+  background-color: #e0e0e0;
 }
 
 .selected {
   background: #a0a0a0;
 }
 
-#questions_panel {
-  padding: 10px;
+#question_no {
+  font-size: 18px;
+}
+
+#question_text {
+  font-size: 18px;
+}
+
+.panel-label {
+  display: inline-block;
+  width: 29px;
+  height: 29px;
+  padding-top: 5px;
+  margin: 2px;
+  border-radius: 2px;
+  background-color: #e0e0e0;
+  color: #263238;
+  font-size: 18px;
+  text-align: center;
+  cursor: pointer;
 }

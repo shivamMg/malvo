@@ -1,35 +1,54 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="ui centered grid">
+  <div class="five wide computer seven wide tablet column">
 
-{% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
-{% endif %}
+  {% if form.errors %}
+    <div class="ui error message">
+      Your username and password didn't match. Please try again.
+    </div>
+  {% endif %}
 
-{% if next %}
-    {% if user.is_authenticated %}
-    <p>Your account doesn't have access to this page. To proceed,
-    please login with an account that has access.</p>
-    {% else %}
-    <p>Please login to see this page.</p>
-    {% endif %}
-{% endif %}
+  {% if next %}
+      {% if user.is_authenticated %}
+      <div class="ui error message">
+        Your account doesn't have access to this page. To proceed,
+        please login with an account that has access.
+      </div>
+      {% else %}
+      <div class="ui error message">
+        Please login to see this page.
+      </div>
+      {% endif %}
+  {% endif %}
 
-<form method="post" action="{% url 'teams:login' %}">
-{% csrf_token %}
-<table>
-<tr>
-    <td>{{ form.username.label_tag }}</td>
-    <td>{{ form.username }}</td>
-</tr>
-<tr>
-    <td>{{ form.password.label_tag }}</td>
-    <td>{{ form.password }}</td>
-</tr>
-</table>
+  <h2>Log in to your account</h2>
 
-<input type="submit" value="login" />
-<input type="hidden" name="next" value="{{ next }}" />
-</form>
+  <form class="ui large form" method="post" action="{% url 'teams:login' %}">
+  {% csrf_token %}
 
+    <div class="ui segment">
+      <div class="field">
+          {{ form.username.label_tag }}
+          {{ form.username }}
+      </div>
+      <div class="field">
+        {{ form.password.label_tag }}
+        {{ form.password }}
+      </div>
+      <div class="field">
+        <button class="ui fluid primary large button" type="submit">Login</button>    
+      </div>
+    </div>
+
+    <input type="hidden" name="next" value="{{ next }}" />
+  </form>
+
+  <div class="ui info message">
+    New Team? Register <a href="{% url 'teams:register' %}">here</a>.
+  </div>
+
+  </div>
+</div>
 {% endblock %}

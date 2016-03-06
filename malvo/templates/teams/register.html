@@ -1,52 +1,61 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="ui centered grid">
+  <div class="six wide computer eight wide tablet column">
 
-{% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
-{% endif %}
+  <h2>Register your team</h2>
 
-{% if next %}
-    {% if user.is_authenticated %}
-    <p>Your account doesn't have access to this page. To proceed,
-    please login with an account that has access.</p>
-    {% else %}
-    <p>Please login to see this page.</p>
-    {% endif %}
-{% endif %}
-
-<form method="post" action="{% url 'teams:register' %}">
+<form class="ui large form {% if team_form.errors %}error{% endif %}" method="post" action="{% url 'teams:register' %}">
 {% csrf_token %}
 
-<table>
-{% for field in team_form %}
-    <tr>
-        <td>{{ field.label_tag }}</td>
-        <td>{{ field }}</td>
-        <td>{{ field.errors }}</td>
-    </tr>
-{% endfor %}
-</table>
+  <div class="ui segment">
+  {% for field in team_form %}
+    {% if field.errors %}
+      <div class="field error">
+        {{ field.label_tag }}
+        {{ field }}
+      </div>
+      <div class="ui error message">
+        {{ field.errors }}
+      </div>
+    {% else %}
+      <div class="field">
+        {{ field.label_tag }}
+        {{ field }}
+      </div>
+    {% endif %}
+  {% endfor %}
 
-{% for form in team_member_formset %}
-<table>
-    <tr>
-        <th>Member {{ forloop.counter }}</th>
-    </tr>
+  {% for form in team_member_formset %}
+    <h5>Member {{ forloop.counter }}</h5>
+    
     {% for field in form %}
-        <tr>
-            <td>{{ field.label_tag }}</td>
-            <td>{{ field }}</td>
-            <td>{{ field.errors }}</td>
-        </tr>
+      {% if field.errors %}
+        <div class="field error">
+          {{ field.label_tag }}
+          {{ field }}
+        </div>
+        <div class="ui error message">
+          {{ field.errors }}
+        </div>
+      {% else %}
+        <div class="field">
+          {{ field.label_tag }}
+          {{ field }}
+        </div>
+      {% endif %}
     {% endfor %}
-</table>
-{% endfor %}
+  {% endfor %}
 
-{{ team_member_formset.management_form }}
+    <div class="field">
+      <button class="ui submit button" type="submit">Register</button>
+    </div>
+  </div>
 
-<input type="submit" value="register" />
-<input type="hidden" name="next" value="{{ next }}" />
+  {{ team_member_formset.management_form }}
+
+  <input type="hidden" name="next" value="{{ next }}" />
 </form>
 
 {% endblock %}

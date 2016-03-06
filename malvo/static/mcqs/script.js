@@ -9,9 +9,6 @@ var McqObj = {
 };
 
 $(document).ready(function() {
-  /* Hide questions panel */
-  var panel = $("#questions_panel");
-  panel.hide();
 
   $.getJSON(mcqFilepath, function(data) {
     console.log("MCQs downloaded.");
@@ -21,13 +18,11 @@ $(document).ready(function() {
     McqObj.curQuesIndex = 0;
 
     switchQuestion(0);
-    /* 
-     * - Initialize `Answers` with empty answers.
-     * - Create panel buttons.
-     */
+    /* Create panel buttons */
+    var panel = $("#questions_panel");
     var panelButtons = "";
     for (i = 0; i < McqObj.len; i++) {
-      var panelButton = '<input type="button" onclick="switchQuestion(' + String(i) + ')" value="' + String(i+1) + '"/>';
+      var panelButton = '<span class="panel-label" onclick="switchQuestion(' + String(i) + ')">' + String(i+1) + '</span>';
       panelButtons += panelButton;
     }
     /* Add buttons to panel */
@@ -67,9 +62,9 @@ $(document).ready(function() {
     $.each(question.choices, function(i, choice) {
       /* Highlight the choice if it has already been selected as answer */
       if (choice == Answers[question.qno]) {
-        div = '<div class="choices selected" onclick="selectChoice(this)">' + choice + '</div>';
+        div = '<div class="ui segment choice blue" onclick="selectChoice(this)">' + choice + '</div>';
       } else {
-        div = '<div class="choices" onclick="selectChoice(this)">' + choice + '</div>';
+        div = '<div class="ui segment choice" onclick="selectChoice(this)">' + choice + '</div>';
       }
 
       choices +=  div;
@@ -114,11 +109,6 @@ $(document).ready(function() {
       console.log("Error occured while uploading answers.");
       alert("Error occured while uploading answers.");
     });
-  });
-
-  /* Toggle Questions Panel */
-  $("#panel_toggle_button").click(function() {
-    panel.slideToggle("slow");
   });
 
 });
