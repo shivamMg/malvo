@@ -2,7 +2,8 @@
 {% load staticfiles %}
 
 {% block stylesheets %}
-<link rel="stylesheet" href="{% static 'mcqs/style.css' %}" />
+<link rel="stylesheet" href="{% static 'mcqs/css/gruvbox-dark.css' %}">
+<link rel="stylesheet" href="{% static 'mcqs/css/style.css' %}" />
 {% endblock %}
 
 {% block content %}
@@ -12,15 +13,14 @@
   
   <div class="eleven wide column">
     <div class="ui segment">
-      <div>
-        Q<span id="question_no"></span>.
-        <soan id="question_text"></span>
-      </div><br>
+      <div id="question_text"></div>
+      <div class="ui divider"></div>
       <div id="choices"></div>
     </div>
   </div>
 
   <div class="three wide column">
+    <div class="ui segment center aligned" id="question_no"></div>
     <div id="questions_panel" class="ui segment inverted"></div>
     <div>
       <button class="ui left basic attached button" id="prev_question">Previous</button>
@@ -34,6 +34,8 @@
 {% endblock %}
 
 {% block scripts %}
+<script type="text/javascript" src="{% static 'mcqs/js/showdown.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'mcqs/js/highlight.pack.js' %}"></script>
 <script type="text/javascript">
   /* CSRF Token */
   var csrfmiddlewaretoken = "{{ csrf_token }}";
@@ -43,7 +45,12 @@
    * Both keys and values are strings.
    */
   var Answers = JSON.parse("{{ previous_answers|escapejs }}");
+
+  /* Filepath for MCQs JSON dump */
   var mcqFilepath = "/static/mcqs/" + "{{ mcq_filename }}";
+
+  /* Initialize Showdown MDtoHTML Converter */
+  var showdownConverter = new showdown.Converter();
 </script>
-<script type="text/javascript" src="{% static 'mcqs/script.js' %}"></script>
+<script type="text/javascript" src="{% static 'mcqs/js/script.js' %}"></script>
 {% endblock %}

@@ -6,16 +6,17 @@
   background-color: #e0e0e0;
 }
 
-.selected {
-  background: #a0a0a0;
-}
-
 #question_no {
   font-size: 18px;
 }
 
 #question_text {
   font-size: 18px;
+}
+
+#question_text pre code {
+  border-radius: 4px;
+  font-size: 16px;
 }
 
 .panel-label {

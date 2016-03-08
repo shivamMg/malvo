@@ -56,9 +56,17 @@ $(document).ready(function() {
     var choices = "";
     var question = McqObj.questions[index];
 
-    $("#question_no").text(question.qno);
-    $("#question_text").text(question.qtext);
-    
+    $("#question_no").text("Q" + String(question.qno));
+    /* Convert Markdown text to HTML */
+    var qtextHtml = showdownConverter.makeHtml(question.qtext);
+
+    $("#question_text").html(qtextHtml);
+
+    /* Highlightjs */
+    $('pre code').each(function(i, block) {
+      hljs.highlightBlock(block);
+    });
+
     $.each(question.choices, function(i, choice) {
       /* Highlight the choice if it has already been selected as answer */
       if (choice == Answers[question.qno]) {
