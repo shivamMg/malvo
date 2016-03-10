@@ -19,7 +19,7 @@
   font-size: 16px;
 }
 
-.panel-label {
+.qno-panel-label {
   display: inline-block;
   width: 29px;
   height: 29px;
@@ -31,4 +31,9 @@
   font-size: 18px;
   text-align: center;
   cursor: pointer;
+}
+
+.answered {
+  background-color: #00b5ad;
+  color: #fff;
 }

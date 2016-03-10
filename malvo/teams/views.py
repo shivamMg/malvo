@@ -8,11 +8,6 @@ def register_team(request):
     if request.method == 'GET':
         team_form = TeamCreationForm()
         team_member_formset = TeamMemberCreationFormSet()
-
-        return render(request, 'teams/register.html', {
-            'team_form': team_form,
-            'team_member_formset': team_member_formset}
-        )
     elif request.method == 'POST':
         team_form = TeamCreationForm(request.POST)
         team_member_formset = TeamMemberCreationFormSet(request.POST)
@@ -24,9 +19,9 @@ def register_team(request):
                 # Set foreignkey to team
                 tm.team = t
                 tm.save()
-            return HttpResponseRedirect(reverse('mcqs:index'))
-        else:
-            return render(request, 'teams/register.html', {
-                'team_form': team_form,
-                'team_member_formset': team_member_formset}
-            )
+            return HttpResponseRedirect(reverse('teams:login'))
+
+    return render(request, 'teams/register.html', {
+        'team_form': team_form,
+        'team_member_formset': team_member_formset,}
+    )

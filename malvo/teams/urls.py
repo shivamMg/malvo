@@ -19,6 +19,6 @@ urlpatterns = [
     url(
         r'^register/',
         views.register_team,
-        name='register'
+        name='register',
     ),
 ]
