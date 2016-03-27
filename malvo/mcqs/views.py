@@ -37,7 +37,7 @@ def index(request):
             qno: 'Unsolved' for qno in range(1, questions.count()+1)}
     else:
         for ans in answer_list:
-            if ans.choice_text == '':
+            if ans.choice_id == 0:
                 answer_status_dict[ans.question_no] = 'Unsolved'
             else:
                 answer_status_dict[ans.question_no] = 'Solved'
@@ -58,16 +58,20 @@ def mcq(request):
     team, questions = team_and_question_list(request.user)
     dump_mcqs_to_file()
 
-    # Store key-value pairs of question numbers and answered choices
+    # Store key-value pairs of question numbers and answered choice-ids
     # Both keys and values are strings
     answers = {}
 
     if team.teammcqanswer_set.exists():
         for answer in team.teammcqanswer_set.all():
-            answers[str(answer.question_no)] = answer.choice_text
-    # If no questions were answered previously, choices are marked empty strings
+            if answer.choice_id == 0:
+                answers[str(answer.question_no)] = ''
+            else:
+                answers[str(answer.question_no)] = 'choice_' + str(answer.choice_id)
     else:
-        answers = {str(i): "" for i in range(1, questions.count()+1)}
+        # If no questions were answered previously, choice-ids are marked empty
+        # strings
+        answers = {str(i): '' for i in range(1, questions.count()+1)}
 
     if team.lang_pref == 'J':
         mcq_filename = JAVA_FILENAME
@@ -92,11 +96,16 @@ def answer(request):
 
         # Save new answers
         for qno in range(1, questions.count()+1):
-            choice_text = request.POST.get(str(qno))
+            choice_id_str = request.POST.get(str(qno))
+            # Extract integer id
+            if choice_id_str == '':
+                choice_id = 0
+            else:
+                choice_id = int(choice_id_str[len('choice_'):])
 
             TeamMcqAnswer.objects.create(
                 question_no=qno,
-                choice_text=choice_text,
+                choice_id=choice_id,
                 team=team
             )
 

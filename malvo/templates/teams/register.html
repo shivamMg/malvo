@@ -14,10 +14,8 @@
     {% if field.errors %}
       <div class="field error">
         {{ field.label_tag }}
+        <span style="font-size:10px;">{{ field.errors.as_text }}</span>
         {{ field }}
-      </div>
-      <div class="ui error message">
-        {{ field.errors }}
       </div>
     {% else %}
       <div class="field">
@@ -34,10 +32,8 @@
       {% if field.errors %}
         <div class="field error">
           {{ field.label_tag }}
+          <span style="font-size:10px;">{{ field.errors.as_text }}</span>
           {{ field }}
-        </div>
-        <div class="ui error message">
-          {{ field.errors }}
         </div>
       {% else %}
         <div class="field">

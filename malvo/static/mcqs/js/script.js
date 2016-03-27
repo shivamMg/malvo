@@ -1,3 +1,4 @@
+
 var McqObj = {
   questions: [],
   /* `len` would be the total number of questions */
@@ -87,10 +88,10 @@ $(document).ready(function() {
 
       $.each(question.choices, function(i, choice) {
         /* Highlight the choice if it has already been selected as answer */
-        if (choice == Answers[question.qno]) {
-          div = '<div class="ui segment inverted teal choice" onclick="selectChoice(this)">' + choice + '</div>';
+        if (choice.id == Answers[question.qno]) {
+          div = '<div class="ui segment inverted teal choice" onclick="selectChoice(this)" id="' + choice.id + '">' + choice.text + '</div>';
         } else {
-          div = '<div class="ui segment choice" onclick="selectChoice(this)">' + choice + '</div>';
+          div = '<div class="ui segment choice" onclick="selectChoice(this)" id="' + choice.id + '">' + choice.text + '</div>';
         }
 
         choices +=  div;
@@ -103,9 +104,10 @@ $(document).ready(function() {
   };
 
   window.selectChoice = function selectChoice(ele) {
-    var selectedChoice = $(ele).text();
+    var selectedChoiceId = $(ele).attr("id");
+    console.log(selectedChoiceId);
     var curQuesNo = String(McqObj.curQuesIndex+1);
-    Answers[curQuesNo] = selectedChoice;
+    Answers[curQuesNo] = selectedChoiceId;
     $(ele).addClass("teal inverted");
 
     /* Mark Question as answered in question_no_panel */

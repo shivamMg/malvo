@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import BaseUserManager
 from django.utils.translation import ugettext_lazy as _
+from django.core.validators import MinLengthValidator
 
 
 class TeamManager(BaseUserManager):
@@ -86,8 +87,12 @@ class TeamMember(models.Model):
     Team Member belonging to a Team
     """
     full_name = models.CharField(_('full name'), max_length=25)
-    mobile_no = models.CharField(_('mobile number'), max_length=15)
-    email = models.EmailField(_('email address'), max_length=40)
+    mobile_no = models.CharField(
+        _('mobile number'),
+        max_length=15,
+        validators=[MinLengthValidator(10, 'Invalid Mobile Number')]
+    )
+    email = models.EmailField(_('email address'), max_length=50)
     team = models.ForeignKey(Team)
 
     USERNAME_FIELD = 'full_name'
@@ -112,12 +117,12 @@ class TeamMcqAnswer(models.Model):
     Answer to an MCQ by a Team
     """
     question_no = models.IntegerField()
-    # Text of the answer/choice selected
-    choice_text = models.CharField(max_length=1000)
+    # id of the choice selected
+    choice_id = models.IntegerField(default=0)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = ('question_no', 'team',)
 
     def __str__(self):
-        return "Q{0} Ans:{1}".format(self.question_no, self.choice_text)
+        return "Q{0} Ans:{1}".format(self.question_no, self.choice_id)

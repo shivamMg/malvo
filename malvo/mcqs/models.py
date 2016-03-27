@@ -16,7 +16,7 @@ class Question(models.Model):
         unique_together = (('language', 'question_no'),)
 
     def __str__(self):
-        return "Q{0}. {1}".format(self.question_no, self.question_text)
+        return "Q{0}. {1}".format(self.question_no, self.question_text[:80])
 
 
 class Choice(models.Model):
