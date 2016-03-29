@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="ui container">
+  <div class="ui two column stackable grid">
+    <div class="column">
+    {% if question_list %}
+      <div class="ui segments">
+      {% for question in question_list %}
+        <div class="ui segment header">
+          Question {{ question.question_no }}&nbsp;&nbsp;&nbsp;
+        </div>
+      {% endfor %}
+      </div>
+    {% else %}
+      <h2>No information to display.</h2>
+    {% endif %}
+    </div>
+
+    <div class="center aligned column">
+      <a class="ui primary button huge" href="{% url 'coding:challenge' question_no=1 %}">ENTER</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

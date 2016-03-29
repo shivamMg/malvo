@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'mcqs',
     'teams',
+    'coding',
 ]
 
 MIDDLEWARE_CLASSES = [

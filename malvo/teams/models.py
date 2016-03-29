@@ -126,3 +126,21 @@ class TeamMcqAnswer(models.Model):
 
     def __str__(self):
         return "Q{0} Ans:{1}".format(self.question_no, self.choice_id)
+
+
+class TeamCodingAnswer(models.Model):
+    """
+    Answer to a Coding Question by a Team
+    """
+    question_no = models.IntegerField()
+    input_case_no = models.IntegerField()
+    output_text = models.TextField()
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('team', 'question_no', 'input_case_no',)
+
+    def __str__(self):
+        return 'Q{} Input-case:{} Ans:{}'.format(self.question_no,
+                                                 self.input_case_no,
+                                                 self.output_text[:60])

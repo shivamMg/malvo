@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{% static 'css/gruvbox-dark.css' %}">
+<style type="text/css">
+  #question_text {
+    font-size: 16px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="ui grid">
+  <div class="fourteen wide column centered">
+    <div class="ui segment">
+      <div id="question_text" class="markdown">{{ question.question_text }}</div>
+    </div>
+    <div class="ui segment">
+      <form method="post" action="{% url 'coding:answer' question_no=question.question_no %}">
+        <div class="ui grid">
+        {% for case in case_list %}
+          <div class="row">
+            <div class="eight wide column">
+              <h5>Input Case #{{ case.input.case_no }}</h5>
+              <div class="markdown">{{ case.input.case_text }}</div>
+            </div>
+            <div class="eight wide column">
+              <div class="ui form">
+                <div class="field">
+                  <label>Output #{{ case.output.case_no }}</label>
+                  <textarea name="{{ case.output.field_name }}"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+        <div class="row">
+          <div class="eight wide column"></div>
+          <div class="eight wide column">
+            <button class="ui primary button large" type="submit">Submit Answers</button>
+          </div>
+        </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="{% static 'js/showdown.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/highlight.pack.js' %}"></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    /* Initialize Showdown MDtoHTML Converter */
+    var showdownConverter = new showdown.Converter();
+
+    $(".markdown").each(function(i, ele) {
+      var md = $(ele).text();
+      var html = showdownConverter.makeHtml(md);
+      $(ele).html(html);
+    });
+  });
+</script>
+{% endblock %}
