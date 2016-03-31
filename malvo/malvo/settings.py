@@ -147,3 +147,9 @@ LOGIN_URL = '/team/login/'
 # Auth user model
 
 AUTH_USER_MODEL = 'teams.Team'
+
+
+# Media
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'

@@ -133,14 +133,27 @@ class TeamCodingAnswer(models.Model):
     Answer to a Coding Question by a Team
     """
     question_no = models.IntegerField()
-    input_case_no = models.IntegerField()
+    inputcase_no = models.IntegerField()
     output_text = models.TextField()
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = ('team', 'question_no', 'input_case_no',)
+        unique_together = ('team', 'question_no', 'inputcase_no',)
 
     def __str__(self):
         return 'Q{} Input-case:{} Ans:{}'.format(self.question_no,
-                                                 self.input_case_no,
+                                                 self.inputcase_no,
                                                  self.output_text[:60])
+
+
+class UploadFileModel(models.Model):
+    # Challenge Question No
+    question_no = models.IntegerField()
+    file = models.FileField(upload_to='coding_files/')
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('team', 'question_no',)
+
+    def __str__(self):
+        return '{} Q{} {}'.format(self.team, self.question_no, self.file)

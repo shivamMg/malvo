@@ -14,37 +14,89 @@
 
 <div class="ui grid">
   <div class="fourteen wide column centered">
+    <!-- Status Belt -->
+    <div class="ui inverted segment">
+    {% if status_dict %}
+      {% for question_no, status in status_dict.items %}
+        <a href="{% url 'coding:challenge' question_no=question_no %}" class="ui label
+        {% if status == 'S' %}
+          green
+        {% elif status == 'PS' %}
+          olive
+        {% elif status == 'U' %}
+          grey
+        {% endif %}
+
+        {% if question_no == question.question_no %}
+          large
+        {% endif %}
+        ">
+          {{ question_no }}
+        </a>
+      {% endfor %}
+    {% else %}
+      <h2>No information to display.</h2>
+    {% endif %}
+    </div>
+
+    <!-- Challenge Question -->
     <div class="ui segment">
+      <h3><u>Challenge {{ question.question_no }}</u></h3>
       <div id="question_text" class="markdown">{{ question.question_text }}</div>
     </div>
-    <div class="ui segment">
-      <form method="post" action="{% url 'coding:answer' question_no=question.question_no %}">
-        <div class="ui grid">
+
+    <!-- Challenge Cases -->
+    <form method="post" action="{{ request.path }}" enctype="multipart/form-data">
+    {% csrf_token %}
+
         {% for case in case_list %}
-          <div class="row">
-            <div class="eight wide column">
-              <h5>Input Case #{{ case.input.case_no }}</h5>
-              <div class="markdown">{{ case.input.case_text }}</div>
-            </div>
-            <div class="eight wide column">
-              <div class="ui form">
-                <div class="field">
-                  <label>Output #{{ case.output.case_no }}</label>
-                  <textarea name="{{ case.output.field_name }}"></textarea>
+          <div class="ui segment">
+            <div class="ui grid">
+              <div class="row">
+                <div class="eight wide column">
+                  <h5>Input Case #{{ case.input.case_no }}</h5>
+                  <div class="markdown">{{ case.input.case_text }}</div>
+                </div>
+                <div class="eight wide column">
+                  <div class="ui form">
+                    <div class="field">
+                      <label>Output #{{ case.output.case_no }}</label>
+                      <textarea name="{{ case.output.field_name }}" rows="4">{{ case.output.previous_answer }}</textarea>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         {% endfor %}
-        <div class="row">
-          <div class="eight wide column"></div>
-          <div class="eight wide column">
-            <button class="ui primary button large" type="submit">Submit Answers</button>
+        
+        <div class="ui segment">
+          <div class="ui grid">
+            <div class="row">
+              <div class="eight wide column">
+              <div class="inline field">
+                {% for field in file_form %}
+                  {% if field.errors %}
+                    <div class="ui negative message">
+                      {{ field.errors.as_text }}  
+                    </div>
+                  {% endif %}
+                  <div class="ui right pointing red basic label">
+                    REQUIRED
+                  </div>
+                  {{ field.label_tag }}
+                  {{ field }}
+                {% endfor %}
+              </div>
+              </div>
+              <div class="eight wide column">
+                <button class="ui primary button large" type="submit">SUBMIT</button>
+              </div>
+            </div>
           </div>
         </div>
-        </div>
-      </form>
-    </div>
+
+    </form>
   </div>
 </div>
 

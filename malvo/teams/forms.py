@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.utils.translation import ugettext_lazy as _
 
-from .models import Team, TeamMember
+from .models import Team, TeamMember, UploadFileModel
 
 
 class TeamCreationForm(forms.ModelForm):
@@ -81,3 +81,13 @@ class TeamMemberChangeForm(forms.ModelForm):
 
 
 TeamMemberCreationFormSet = forms.formset_factory(TeamMemberCreationForm, extra=2)
+
+
+class UploadFileForm(forms.ModelForm):
+    class Meta:
+        model = UploadFileModel
+
+        fields = ('file',)
+        labels = {
+            'file': 'Upload File',
+        }
