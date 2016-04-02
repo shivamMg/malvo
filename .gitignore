@@ -8,6 +8,7 @@ venv/
 
 # Bower components
 bower_components/
+lib/
 
 # Configurations directory
 conf/

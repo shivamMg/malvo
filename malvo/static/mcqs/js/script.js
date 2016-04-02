@@ -24,7 +24,7 @@ $(document).ready(function() {
     /* Create panel buttons */
     var panelButtons = "";
     for (i = 0; i < McqObj.len; i++) {
-      if (Answers[String(i+1)] === "") {
+      if (Answers[String(i+1)] === "" || typeof Answers[String(i+1)] === "undefined") {
         panelButton = '<span class="qno-panel-label" id="qno' + String(i+1) + '">' + String(i+1) + '</span>';
       } else {
         panelButton = '<span class="qno-panel-label answered" id="qno' + String(i+1) + '">' + String(i+1) + '</span>';
@@ -88,10 +88,11 @@ $(document).ready(function() {
 
       $.each(question.choices, function(i, choice) {
         /* Highlight the choice if it has already been selected as answer */
-        if (choice.id == Answers[question.qno]) {
-          div = '<div class="ui segment inverted teal choice" onclick="selectChoice(this)" id="' + choice.id + '">' + choice.text + '</div>';
+        var choiceid = "choiceno" + String(choice.no);
+        if (choice.no == Answers[String(question.qno)] && typeof Answers[String(question.qno)] != "undefined") {
+          div = '<div class="ui segment inverted teal choice" onclick="selectChoice(this)" id="' + choiceid + '">' + choice.text + '</div>';
         } else {
-          div = '<div class="ui segment choice" onclick="selectChoice(this)" id="' + choice.id + '">' + choice.text + '</div>';
+          div = '<div class="ui segment choice" onclick="selectChoice(this)" id="' + choiceid + '">' + choice.text + '</div>';
         }
 
         choices +=  div;
@@ -105,9 +106,9 @@ $(document).ready(function() {
 
   window.selectChoice = function selectChoice(ele) {
     var selectedChoiceId = $(ele).attr("id");
-    console.log(selectedChoiceId);
+    var choiceno = parseInt(selectedChoiceId.slice("choiceno".length));
     var curQuesNo = String(McqObj.curQuesIndex+1);
-    Answers[curQuesNo] = selectedChoiceId;
+    Answers[curQuesNo] = choiceno;
     $(ele).addClass("teal inverted");
 
     /* Mark Question as answered in question_no_panel */
@@ -118,16 +119,9 @@ $(document).ready(function() {
   };
 
   $("#submit_all").click(function() {
-    /* Check if all questions have been solved (No answer is empty) */
-    var allAnswersSolved = true;
-    $.each(Answers, function(qno, answer) {
-      if (answer === "") {
-        allAnswersSolved = false;
-        return;
-      }
-    });
 
-    if (allAnswersSolved === false) {
+    /* If all questions have not been solved */
+    if (Object.keys(Answers).length != McqObj.len) {
       var submitAnswers = confirm("You have not answered all questions. Would you still like to continue uploading answers?");
       /* If user cancels confirmation, don't upload answers */
       if (submitAnswers === false) {

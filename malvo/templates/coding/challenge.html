@@ -18,17 +18,16 @@
     <div class="ui inverted segment">
     {% if status_dict %}
       {% for question_no, status in status_dict.items %}
-        <a href="{% url 'coding:challenge' question_no=question_no %}" class="ui label
+        <a href="{% url 'coding:challenge' question_no=question_no %}"
+        class="ui label
+        {% if question_no == question.question_no %} large {% endif %}
+
         {% if status == 'S' %}
           green
         {% elif status == 'PS' %}
           olive
         {% elif status == 'U' %}
           grey
-        {% endif %}
-
-        {% if question_no == question.question_no %}
-          large
         {% endif %}
         ">
           {{ question_no }}
@@ -103,7 +102,7 @@
 {% endblock %}
 
 {% block scripts %}
-<script type="text/javascript" src="{% static 'js/showdown.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'lib/showdown/dist/showdown.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/highlight.pack.js' %}"></script>
 <script type="text/javascript">
   $(document).ready(function() {

@@ -12,19 +12,19 @@ def extract_mcqs(lang_code):
     Returns JSON dump of all Questions and their Choices for a language
     """
     data = []
-    for question in Question.objects.filter(language=lang_code):
+    for ques in Question.objects.filter(language=lang_code):
         choice_list = []
         # Extract choices
-        for choice in question.choice_set.all():
+        for choice in ques.choice_set.all():
             choice_list.append({
-                'id': 'choice_' + str(choice.id),
+                'no': choice.choice_no,
                 'text': choice.choice_text,}
             )
 
         data.append({
-            'qno': question.question_no,
-            'qtext': question.question_text,
-            'choices': choice_list}
+            'qno': ques.question_no,
+            'qtext': ques.question_text,
+            'choices': choice_list,}
         )
 
     return json.dumps(data)

@@ -1,23 +1,56 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{% static 'css/gruvbox-dark.css' %}">
+<link rel="stylesheet" href="{% static 'mcqs/css/style.css' %}" />
+{% endblock %}
 
 {% block content %}
-{% if error_message %}
-<p><strong>{{ error_message }}</strong></p>
-{% endif %}
 
-<p>Question {{ question.question_no }}</p>
-<h4><pre>{{ question.question_text }}</pre></h4>
+<div class="ui grid">
+  <div class="one wide column"></div>
+  
+  <div class="eleven wide column">
+    <div class="ui segment" id="question_and_choices_panel">
+      <div id="question_text"></div>
+      <div class="ui divider"></div>
+      <div id="choices"></div>
+    </div>
+  </div>
 
-{% if question.choice_set.all %}
-    <form action="{% url 'mcqs:answer' question.question_no %}" method="post">
-    {% csrf_token %}
-    {% for choice in question.choice_set.all %}
-        <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
-        <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
-    {% endfor %}
-{% else %}
-    <p>No choices available.</p>
-{% endif %}
+  <div class="three wide column">
+    <div class="ui segment center aligned" id="question_no"></div>
+    <div id="question_no_panel" class="ui segment inverted"></div>
+    <div>
+      <button class="ui left basic attached button" id="prev_question">Previous</button>
+      <button class="ui right basic attached button" id="next_question">Next</button>
+    </div>
+    <br>
+    <button class="ui fluid button" id="submit_all">Submit all</button>
+  </div>
+</div>
 
-<input type="submit" value="Submit">
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="{% static 'lib/showdown/dist/showdown.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/highlight.pack.js' %}"></script>
+<script type="text/javascript">
+  /* CSRF Token */
+  var csrfmiddlewaretoken = "{{ csrf_token }}";
+  
+  /* Previous answers
+   * `Answers` contains question numbers as keys and answered choices as values.
+   * Both keys and values are strings.
+   */
+  var Answers = JSON.parse("{{ previous_answers|escapejs }}");
+
+  /* Filepath for MCQs JSON dump */
+  var mcqFilepath = "/static/mcqs/" + "{{ mcq_filename }}";
+
+  /* Initialize Showdown MDtoHTML Converter */
+  var showdownConverter = new showdown.Converter();
+</script>
+<script type="text/javascript" src="{% static 'mcqs/js/script.js' %}"></script>
 {% endblock %}

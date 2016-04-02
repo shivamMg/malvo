@@ -8,7 +8,7 @@ from teams.forms import UploadFileForm
 from teams.models import TeamCodingAnswer, Team, UploadFileModel
 
 
-def get_case_list(question):
+def _get_case_list(question):
     """
     Returns a list of cases.
     case:
@@ -34,7 +34,7 @@ def get_case_list(question):
     return case_list
 
 
-def get_question_statuses(team):
+def _get_question_statuses(team):
     """
     Returns a dictionary of Question numbers and statuses as key-value pairs.
     Status could be:
@@ -73,7 +73,7 @@ def get_question_statuses(team):
 def index(request):
     team = Team.objects.get(team_name=request.user)
 
-    status_dict = get_question_statuses(team)
+    status_dict = _get_question_statuses(team)
 
     return render(request, 'coding/index.html', {
         'status_dict': status_dict,}
@@ -85,8 +85,8 @@ def challenge(request, question_no):
     question = get_object_or_404(Question, question_no=question_no)
     team = Team.objects.get(team_name=request.user)
 
-    case_list = get_case_list(question)
-    status_dict = get_question_statuses(team)
+    case_list = _get_case_list(question)
+    status_dict = _get_question_statuses(team)
 
     if request.method == 'POST':
         file_form = UploadFileForm(request.POST, request.FILES)

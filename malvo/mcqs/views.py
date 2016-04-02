@@ -1,6 +1,6 @@
 import json
 
-from django.shortcuts import render
+from django.shortcuts import render, get_list_or_404
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
@@ -10,76 +10,62 @@ from .dump_mcqs import dump_mcqs_to_file, JAVA_FILENAME, C_FILENAME
 from teams.models import Team, TeamMcqAnswer
 
 
-def team_and_question_list(team_name):
+def _team_and_question_list(team_name):
     """
     Returns Team object for `team_name` and questions list as per
     team language preference
     """
     team = Team.objects.get(team_name=team_name)
-    questions = Question.objects.filter(language=team.lang_pref)
-    return (team, questions)
+    question_list = get_list_or_404(Question, language=team.lang_pref)
+    return (team, question_list)
+
+
+def _get_question_statuses(team):
+    """
+    Returns a dictionary of Question numbers and statuses as key-value pairs.
+    Status could be:
+        'S': Solved
+        'U': Unattempted
+    """
+    status_dict = {}
+
+    for ques in Question.objects.all():
+        try:
+            team.teammcqanswer_set.get(question_no=ques.question_no)
+            status = 'S'
+        except TeamMcqAnswer.DoesNotExist:
+            status = 'U'
+
+        status_dict[ques.question_no] = status
+
+    return status_dict
 
 
 @login_required
 def index(request):
-    team, questions = team_and_question_list(request.user)
+    team, question_list = _team_and_question_list(request.user)
+    status_dict = _get_question_statuses(team)
 
-    # Previous answers given by team
-    answer_list = team.teammcqanswer_set.order_by('question_no')
-
-    # Store key-value pairs of question numbers and answer statuses
-    # If answer is empty, status is 'Unsolved', else 'Solved'
-    answer_status_dict = {}
-
-    # If no answers provided, mark all 'Unsolved'
-    if not answer_list:
-        answer_status_dict = {
-            qno: 'Unsolved' for qno in range(1, questions.count()+1)}
-    else:
-        for ans in answer_list:
-            if ans.choice_id == 0:
-                answer_status_dict[ans.question_no] = 'Unsolved'
-            else:
-                answer_status_dict[ans.question_no] = 'Solved'
-
-    question_list = []
-    for ques in questions.order_by('question_no'):
-        qno = ques.question_no
-        ques.status = answer_status_dict[qno]
-        question_list.append(ques)
-
-    return render(request, 'mcqs/index.html', {
-        'question_list': question_list}
-    )
+    return render(request, 'mcqs/index.html', {'status_dict': status_dict,})
 
 
 @login_required
 def mcq(request):
-    team, questions = team_and_question_list(request.user)
+    team, question_list = _team_and_question_list(request.user)
     dump_mcqs_to_file()
 
-    # Store key-value pairs of question numbers and answered choice-ids
-    # Both keys and values are strings
-    answers = {}
+    answer_dict = {}
 
-    if team.teammcqanswer_set.exists():
-        for answer in team.teammcqanswer_set.all():
-            if answer.choice_id == 0:
-                answers[str(answer.question_no)] = ''
-            else:
-                answers[str(answer.question_no)] = 'choice_' + str(answer.choice_id)
-    else:
-        # If no questions were answered previously, choice-ids are marked empty
-        # strings
-        answers = {str(i): '' for i in range(1, questions.count()+1)}
+    for ans in team.teammcqanswer_set.all():
+        answer_dict[str(ans.question_no)] = ans.choice_no
 
     if team.lang_pref == 'J':
         mcq_filename = JAVA_FILENAME
     else:
         mcq_filename = C_FILENAME
 
-    return render(request, 'mcqs/mcq_on_json.html', {
-        'previous_answers': json.dumps(answers,),
+    return render(request, 'mcqs/mcq.html', {
+        'previous_answers': json.dumps(answer_dict),
         'mcq_filename': mcq_filename,}
     )
 
@@ -87,26 +73,16 @@ def mcq(request):
 @login_required
 def answer(request):
     if request.method == 'POST':
-        team, questions = team_and_question_list(request.user)
+        team, question_list = _team_and_question_list(request.user)
 
-        # Check if team has answered questions before
-        # If yes, delete all of them
-        if team.teammcqanswer_set.exists():
-            team.teammcqanswer_set.all().delete()
+        for ques in question_list:
+            choice_no = request.POST.get(str(ques.question_no), False)
 
-        # Save new answers
-        for qno in range(1, questions.count()+1):
-            choice_id_str = request.POST.get(str(qno))
-            # Extract integer id
-            if choice_id_str == '':
-                choice_id = 0
-            else:
-                choice_id = int(choice_id_str[len('choice_'):])
-
-            TeamMcqAnswer.objects.create(
-                question_no=qno,
-                choice_id=choice_id,
-                team=team
-            )
+            if choice_no:
+                obj, is_created = TeamMcqAnswer.objects.update_or_create(
+                    question_no=ques.question_no,
+                    team=team,
+                    defaults={'choice_no': choice_no,}
+                )
 
     return HttpResponseRedirect(reverse('mcqs:index'))

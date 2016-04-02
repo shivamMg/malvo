@@ -5,22 +5,24 @@
 <div class="ui container">
   <div class="ui two column stackable grid">
     <div class="column">
-    {% if question_list %}
-      <div class="ui segments">
-      {% for question in question_list %}
-        <div class="ui segment header">
-          Question {{ question.question_no }}&nbsp;&nbsp;&nbsp;
-          {% if question.status == "Unsolved" %}
-            <a class="ui red tag label">{{ question.status }}</a>
-          {% else %}
-            <a class="ui teal tag label">{{ question.status }}</a>
-          {% endif %}
+      <div class="ui segment">
+      {% if status_dict %}
+        <div class="ui divided selection list">
+        {% for question_no, status in status_dict.items %}
+          <a class="item">
+            MCQ {{ question_no }}
+            {% if status == 'S' %}
+              <div class="ui green horizontal label right floated">Solved</div>
+            {% elif status == 'U' %}
+              <div class="ui grey horizontal label right floated">Unattempted</div>
+            {% endif %}
+          </a>
+        {% endfor %}
         </div>
-      {% endfor %}
+      {% else %}
+        <h2>No information to display.</h2>
+      {% endif %}
       </div>
-    {% else %}
-      <h2>No information to display.</h2>
-    {% endif %}
     </div>
 
     <div class="center aligned column">

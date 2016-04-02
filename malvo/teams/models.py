@@ -117,15 +117,14 @@ class TeamMcqAnswer(models.Model):
     Answer to an MCQ by a Team
     """
     question_no = models.IntegerField()
-    # id of the choice selected
-    choice_id = models.IntegerField(default=0)
+    choice_no = models.IntegerField(default=0)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = ('question_no', 'team',)
 
     def __str__(self):
-        return "Q{0} Ans:{1}".format(self.question_no, self.choice_id)
+        return "Q{} Choice:{}".format(self.question_no, self.choice_no)
 
 
 class TeamCodingAnswer(models.Model):
