@@ -11,9 +11,10 @@ class Question(models.Model):
     language = models.CharField(max_length=1, choices=PROG_LANGS)
     question_no = models.IntegerField()
     question_text = models.TextField()
+    answer_choice_no = models.IntegerField(default=0)
 
     class Meta:
-        unique_together = (('language', 'question_no'),)
+        unique_together = ('language', 'question_no',)
 
     def __str__(self):
         return "Q{}. [{}] {}".format(self.question_no, self.language,
@@ -27,7 +28,7 @@ class Choice(models.Model):
     choice_text = models.CharField(max_length=1000)
 
     class Meta:
-        unique_together = (('question', 'choice_no'),)
+        unique_together = ('question', 'choice_no',)
 
     def __str__(self):
         return self.choice_text

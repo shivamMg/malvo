@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'mcqs',
     'teams',
     'coding',
+    'scores',
 ]
 
 MIDDLEWARE_CLASSES = [

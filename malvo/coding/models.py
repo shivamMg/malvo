@@ -9,7 +9,7 @@ class Question(models.Model):
     question_text = models.TextField()
 
     def __str__(self):
-        return "Q{0}. {1}".format(self.question_no, self.question_text[:80])
+        return "Q{}. {}".format(self.question_no, self.question_text[:80])
 
 
 class InputCase(models.Model):
@@ -19,6 +19,8 @@ class InputCase(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     case_no = models.IntegerField(default=0)
     case_text = models.TextField()
+    answer_case_text = models.TextField()
+    points = models.IntegerField(default=5)
 
     class Meta:
         unique_together = ('question', 'case_no',)

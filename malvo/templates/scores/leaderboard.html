@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="ui grid">
+  <div class="ui one wide column"></div>
+
+  <div class="ui fourteen wide column">  
+    <div class="ui segment">
+      <table class="ui celled table">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Team Name</th>
+            <th>{{ round_name }} Score</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for team in team_list %}
+          <tr>
+            <td>
+              <div class="ui ribbon label">{{ forloop.counter }}</div>
+            </td>
+            <td>{{ team.name }}</td>
+            <td>{{ team.score }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

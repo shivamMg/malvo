@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="ui grid">
+  <div class="ui one wide column"></div>
+
+  <div class="ui fourteen wide column">
+    <div class="ui inverted segment">
+      <h2>{{ team_count }} Teams competing</h2>
+    </div>
+    <div class="ui inverted segment">
+      <h2>Leaderboards</h2>
+      <div class="ui grid">
+        <div class="ui eight wide column">
+          <a class="ui fluid inverted violet large button" href="{% url 'scores:leaderboard' app='mcqs' %}">MCQs Leaderboard</a>
+        </div>
+        <div class="ui eight wide column">
+          <a class="ui fluid inverted grey large button" href="{% url 'scores:leaderboard' app='coding' %}">Programming Challenges Leaderboard</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

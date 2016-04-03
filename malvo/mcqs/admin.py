@@ -10,7 +10,12 @@ class ChoiceInline(admin.TabularInline):
 
 class QuestionAdmin(admin.ModelAdmin):
     fieldsets = [
-        (None, {'fields': ['question_text', 'language', 'question_no']}),
+        (None, {'fields': [
+            'question_text',
+            'language',
+            'question_no',
+            'answer_choice_no']}
+        ),
     ]
     inlines = [ChoiceInline]
 
