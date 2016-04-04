@@ -5,7 +5,7 @@ from .models import Question, InputCase
 
 class InputCaseInline(admin.TabularInline):
     model = InputCase
-    extra = 3
+    extra = 1
 
 
 class QuestionAdmin(admin.ModelAdmin):

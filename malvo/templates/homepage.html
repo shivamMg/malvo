@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="{% static 'homepage/style.css' %}">
+{% endblock %}
+
+{% block content %}
+<div style="text-align:center;">
+  <h1 class="hash">#</h1>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+  setInterval(function() {
+    var animationEnd = "webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend";
+    $(".hash").addClass("animated flip").one(animationEnd, function() {
+      $(".hash").removeClass("animated flip");
+    });
+  }, 3000);
+</script>
+{% endblock %}

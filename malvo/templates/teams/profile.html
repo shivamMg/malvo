@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="ui container">
+  <div class="ui segment" style="padding: 50px;">
+    <div class="ui two column very relaxed grid">
+      <div class="column">
+        <h1 class="ui grey header center aligned">{{ team_name }}</h1>
+        <h1 class="ui blue header center aligned" style="font-size: 70px;">
+          {{ lang_pref }}
+        </h1>
+        <div class="ui blue header center aligned">Programming Language</div>
+      </div>
+      <div class="ui vertical divider">&middot;</div>
+      <div class="column">
+      {% for member in member_list %}
+        <h2 class="ui teal header">{{ member.full_name|title }}</h2>
+        <ul>
+          <li>
+            <h3 class="ui grey header">{{ member.email }}</h3>
+          </li>
+          <li>
+            <h3 class="ui grey header">{{ member.mobile_no }}</h3>
+          </li>
+        </ul>
+      {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

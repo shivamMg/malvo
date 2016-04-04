@@ -141,7 +141,7 @@ STATICFILES_DIRS = [
 
 # Login Redirect URL
 
-LOGIN_REDIRECT_URL = '/mcqs/'
+LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/team/login/'
 
 

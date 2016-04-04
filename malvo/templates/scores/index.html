@@ -1,24 +1,91 @@
 {% extends 'base.html' %}
 
-{% block content %}
-<div class="ui grid">
-  <div class="ui one wide column"></div>
+{% block stylesheets %}
+<style type="text/css">
+  .minimum-height {
+    min-height: 250px;
+  }
+</style>
+{% endblock %}
 
-  <div class="ui fourteen wide column">
-    <div class="ui inverted segment">
-      <h2>{{ team_count }} Teams competing</h2>
+{% block content %}
+<div class="ui container">
+  <div class="ui two column grid">
+    <div class="column">
+      <div class="ui segment minimum-height">
+        <h2 class="ui grey header">Statistics</h2>
+        <table class="ui definition table">
+          <tbody>
+            <tr>
+              <td class="ui six wide column">MCQ Problems</td>
+              <td>{{ mcqs_count }}</td>
+            </tr>
+            <tr>
+              <td>Programming Challenges</td>
+              <td>{{ coding_count }}</td>
+            </tr>
+            <tr>
+              <td>Input Cases</td>
+              <td>{{ inputcase_count }}</td>
+            </tr>
+            <tr>
+              <td class="ui six wide column">Teams Registered</td>
+              <td>{{ team_count }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-    <div class="ui inverted segment">
-      <h2>Leaderboards</h2>
-      <div class="ui grid">
-        <div class="ui eight wide column">
-          <a class="ui fluid inverted violet large button" href="{% url 'scores:leaderboard' app='mcqs' %}">MCQs Leaderboard</a>
-        </div>
-        <div class="ui eight wide column">
-          <a class="ui fluid inverted grey large button" href="{% url 'scores:leaderboard' app='coding' %}">Programming Challenges Leaderboard</a>
+    <div class="column">
+      <div class="ui segment minimum-height">
+        <h2 class="ui grey header">Leaderboards</h2>
+        <div class="ui one column grid">
+          <div class="column">
+            <a class="ui fluid teal large button" href="{% url 'scores:leaderboard' app='mcqs' %}">MCQs</a>
+          </div>
+          <div class="column">
+            <a class="ui fluid blue large button" href="{% url 'scores:leaderboard' app='coding' %}">Programming Challenges</a>
+          </div>
         </div>
       </div>
     </div>
   </div>
+  <br><br>
+  <div class="ui divider"></div>
+  <br><br>
 </div>
+
+    <div class="ui container">
+      <div class="ui cards centered">
+      {% for team in team_list %}
+        <div class="card">
+          <div class="content">
+            <div class="header">
+            {{ team.team_name }}
+            {% if team.lang_pref == 'C' %}
+              <a class="ui right floated grey label">C</a>
+            {% else %}
+              <a class="ui right floated brown label">Java</a>
+            {% endif %}
+            </div>
+            <div class="description">
+            {% for member in team.member_list %}
+              <div><strong>{{ member.full_name|title }}</strong></div>
+              <div style="padding-left:10px;">
+                <div> &middot; {{ member.email }}</div>
+                <div> &middot; {{ member.mobile_no }}</div>
+              </div>
+            {% endfor %}
+            </div>
+          </div>
+          <div class="extra content">
+            <div class="ui two buttons">
+              <a href="{% url 'scores:evaluate' team_name=team.team_name app='mcqs' %}" class="ui teal button">MCQs</a>
+              <a href="{% url 'scores:evaluate' team_name=team.team_name app='coding' %}" class="ui blue button">Challenges</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+      </div>
+    </div>
 {% endblock %}

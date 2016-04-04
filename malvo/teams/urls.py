@@ -14,11 +14,12 @@ urlpatterns = [
         r'^logout/',
         auth_views.logout,
         name='logout',
-        kwargs={'next_page': '/mcqs/'},
+        kwargs={'next_page': '/'},
     ),
     url(
         r'^register/',
         views.register_team,
         name='register',
     ),
+    url(r'^profile/$', views.profile, name='profile'),
 ]

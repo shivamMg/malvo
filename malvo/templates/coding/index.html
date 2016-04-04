@@ -9,7 +9,7 @@
       {% if status_dict %}
         <div class="ui divided selection list">
         {% for question_no, status in status_dict.items %}
-          <a class="item">
+          <a class="item" href="{% url 'coding:challenge' question_no=question_no %}">
             Challenge {{ question_no }}
             {% if status == 'S' %}
               <div class="ui green horizontal label right floated">Solved</div>

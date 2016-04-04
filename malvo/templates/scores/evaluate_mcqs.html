@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="ui grid">
+  <div class="ui container">
+    <div class="ui two wide column"></div>
+    <div class="ui twelve wide column">
+      <div class="ui inverted segment">
+        <h2>{{ team_name }} &middot; MCQs</h2>
+        <h3>Total Score: {{ score }}</h3>
+      </div>
+      <div class="ui segment">
+        <table class="ui celled padded table">
+          <thead>
+            <tr>
+              <th>Question Number</th>
+              <th>Correct Choice</th>
+              <th>Selected Choice</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for answer in evaluated_list %}
+            <tr>
+              <td>{{ answer.question_no }}</td>
+              <td>{{ answer.selected_choice }}</td>
+              <td
+              {% if answer.selected_choice == answer.answer_choice %}
+                class="positive"
+              {% else %}
+                class="negative"
+              {% endif %}
+              >{{ answer.answer_choice }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

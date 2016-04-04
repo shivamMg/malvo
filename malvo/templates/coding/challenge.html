@@ -54,7 +54,7 @@
               <div class="row">
                 <div class="eight wide column">
                   <h5>Input Case #{{ case.input.case_no }}</h5>
-                  <div class="markdown">{{ case.input.case_text }}</div>
+                  <pre>{{ case.input.case_text }}</pre>
                 </div>
                 <div class="eight wide column">
                   <div class="ui form">
@@ -73,23 +73,23 @@
           <div class="ui grid">
             <div class="row">
               <div class="eight wide column">
-              <div class="inline field">
-                {% for field in file_form %}
-                  {% if field.errors %}
-                    <div class="ui negative message">
-                      {{ field.errors.as_text }}  
-                    </div>
-                  {% endif %}
-                  <div class="ui right pointing red basic label">
-                    REQUIRED
-                  </div>
-                  {{ field.label_tag }}
-                  {{ field }}
-                {% endfor %}
-              </div>
+                <button class="ui primary button large" type="submit">SUBMIT</button>
               </div>
               <div class="eight wide column">
-                <button class="ui primary button large" type="submit">SUBMIT</button>
+                <div class="inline field">
+                  {% for field in file_form %}
+                    {% if field.errors %}
+                      <div class="ui negative message">
+                        {{ field.errors.as_text }}  
+                      </div>
+                    {% endif %}
+                    <div class="ui right pointing red basic label">
+                      REQUIRED
+                    </div>
+                    {{ field.label_tag }}
+                    {{ field }}
+                  {% endfor %}
+                </div>
               </div>
             </div>
           </div>

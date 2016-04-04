@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="ui grid">
+  <div class="ui container">
+    <div class="ui two wide column"></div>
+    <div class="ui twelve wide column">
+      <div class="ui inverted segment">
+        <h2>{{ team_name }} &middot; Programming Challenges</h2>
+        <h3>Total Score: {{ score }}</h3>
+      </div>
+      <div class="ui segment">
+        <table class="ui celled structured table">
+          <thead>
+            <tr>
+              <th>Question Number</th>
+              <th>Input Case Number</th>
+              <th>Correct Output</th>
+              <th>Answered Output</th>
+              <th>Points Earned</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for answer in evaluated_list %}
+            <tr>
+              <td>{{ answer.question_no }}</td>
+              <td>{{ answer.inputcase_no }}</td>
+              <td><pre>{{ answer.correct_output }}</pre></td>
+              {% if answer.correct_output == answer.answered_output %}
+                <td class="positive"><pre>{{ answer.answered_output }}</pre></td>
+                <td class="positive"><h2 class="ui center aligned header">{{ answer.points }}</h2></td>
+              {% else %}
+                <td class="negative"><pre>{{ answer.answered_output }}</pre></td>
+                <td class="negative"><h2 class="ui center aligned header">0</h2></td>
+              {% endif %}
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

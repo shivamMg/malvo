@@ -62,6 +62,10 @@ class Team(AbstractBaseUser):
     def get_short_name(self):
         return self.team_name
 
+    def get_lang_pref_name(self):
+        lang = [lang[1] for lang in self.PROG_LANGS if lang[0] == self.lang_pref]
+        return lang[0]
+
     def get_absolute_url(self):
         return "/teams/{0}".format(self.team_name)
 
