@@ -1,41 +1,46 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="ui grid">
-  <div class="ui container">
-    <div class="ui two wide column"></div>
-    <div class="ui twelve wide column">
-      <div class="ui inverted segment">
-        <h2>{{ team_name }} &middot; MCQs</h2>
-        <h3>Total Score: {{ score }}</h3>
-      </div>
-      <div class="ui segment">
-        <table class="ui celled padded table">
-          <thead>
-            <tr>
-              <th>Question Number</th>
-              <th>Correct Choice</th>
-              <th>Selected Choice</th>
-            </tr>
-          </thead>
-          <tbody>
-          {% for answer in evaluated_list %}
-            <tr>
-              <td>{{ answer.question_no }}</td>
-              <td>{{ answer.selected_choice }}</td>
-              <td
-              {% if answer.selected_choice == answer.answer_choice %}
-                class="positive"
-              {% else %}
-                class="negative"
-              {% endif %}
-              >{{ answer.answer_choice }}</td>
-            </tr>
-          {% endfor %}
-          </tbody>
-        </table>
-      </div>
+
+  <div style="padding-left:10px;padding-right:10px;">
+    <div class="ui inverted segment">
+      <h2 class="ui inverted header">
+        {{ team_name }}
+        {% if team_lang_pref == 'C' %}
+          <a class="ui grey label">C</a>
+        {% else %}
+          <a class="ui brown label">Java</a>
+        {% endif %}
+        &middot; MCQs
+        &middot; <a href="{% url 'scores:evaluate' team_name=team_name app='coding' %}">Programming Challenges</a>
+      </h2>
+      <h3 class="ui inverted header">Total Score: {{ score }}</h3>
+    </div>
+    <div class="ui segment">
+      <table class="ui celled selectable padded table">
+        <thead>
+          <tr>
+            <th>Question Number</th>
+            <th>Correct Choice</th>
+            <th>Selected Choice</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for answer in evaluated_list %}
+          <tr>
+            <td>{{ answer.question_no }}</td>
+            <td>{{ answer.correct_choice }}</td>
+            <td
+            {% if answer.selected_choice == answer.correct_choice %}
+              class="positive"
+            {% else %}
+              class="negative"
+            {% endif %}
+            >{{ answer.selected_choice }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
     </div>
   </div>
-</div>
 {% endblock %}

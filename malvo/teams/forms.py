@@ -91,3 +91,6 @@ class UploadFileForm(forms.ModelForm):
         labels = {
             'file': 'Upload File',
         }
+        widgets = {
+            'file': forms.FileInput(attrs={'required': 'true'})
+        }

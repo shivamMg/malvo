@@ -3,7 +3,7 @@ from operator import itemgetter
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 
-from teams.models import Team
+from teams.models import Team, TeamCodingAnswer, TeamMcqAnswer
 from mcqs.models import Question as McqQuestion
 from coding.models import InputCase, Question as CodingQuestion
 
@@ -11,23 +11,25 @@ from coding.models import InputCase, Question as CodingQuestion
 def _get_team_mcq_score(team):
     score, evaluated_list = 0, []
 
-    for ans in team.teammcqanswer_set.all():
-        question = McqQuestion.objects.get(question_no=ans.question_no,
-                                           language=team.lang_pref)
+    for ques in McqQuestion.objects.filter(language=team.lang_pref):
+        try:
+            answer = team.teammcqanswer_set.get(question_no=ques.question_no)
+            selected_choice = ques.choice_set.get(
+                    choice_no=answer.choice_no).choice_text
 
-        answer_choice = question.choice_set.get(
-                choice_no=question.answer_choice_no).choice_text
-        selected_choice = question.choice_set.get(
-                choice_no=ans.choice_no).choice_text
+            if answer.choice_no == ques.answer_choice_no:
+                score += 1
+        except TeamMcqAnswer.DoesNotExist:
+            selected_choice = ''
+
+        correct_choice = ques.choice_set.get(
+                choice_no=ques.answer_choice_no).choice_text
 
         evaluated_list.append({
-            'question_no': question.question_no,
-            'answer_choice': answer_choice,
+            'question_no': ques.question_no,
+            'correct_choice': correct_choice,
             'selected_choice': selected_choice,}
         )
-
-        if ans.choice_no == question.answer_choice_no:
-            score += 1
 
     evaluated_list = sorted(evaluated_list, key=itemgetter('question_no'))
 
@@ -37,23 +39,32 @@ def _get_team_mcq_score(team):
 def _get_team_coding_score(team):
     score, evaluated_list = 0, []
 
-    for ans in team.teamcodinganswer_set.all():
-        question = CodingQuestion.objects.get(question_no=ans.question_no)
-        try:
-            inputcase = question.inputcase_set.get(case_no=ans.inputcase_no)
+    for ques in CodingQuestion.objects.all():
+        inputcase_list = []
+        for inputcase in ques.inputcase_set.all():
+            try:
+                answer = team.teamcodinganswer_set.get(
+                            question_no=ques.question_no,
+                            inputcase_no=inputcase.case_no)
+                output_text = answer.output_text
 
-            evaluated_list.append({
-                'question_no': question.question_no,
+                if answer.output_text == inputcase.answer_case_text:
+                    score += inputcase.points
+
+            except TeamCodingAnswer.DoesNotExist:
+                output_text = ''
+
+            inputcase_list.append({
                 'inputcase_no': inputcase.case_no,
                 'correct_output': inputcase.answer_case_text,
-                'answered_output': ans.output_text,
+                'answered_output': output_text,
                 'points': inputcase.points,}
             )
 
-            if ans.output_text == inputcase.answer_case_text:
-                score += inputcase.points
-        except InputCase.DoesNotExist:
-            pass
+        evaluated_list.append({
+            'question_no': ques.question_no,
+            'inputcase_list': inputcase_list,}
+        )
 
     evaluated_list = sorted(evaluated_list, key=itemgetter('question_no'))
 
@@ -130,6 +141,7 @@ def evaluate(request, team_name, app):
 
     return render(request, template_name, {
         'team_name': team.team_name,
+        'team_lang_pref': team.get_lang_pref_name(),
         'evaluated_list': evaluated_list,
         'score': score,}
     )
