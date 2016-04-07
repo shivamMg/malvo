@@ -38,16 +38,16 @@ class TeamMemberAdmin(BaseUserAdmin):
     form = TeamMemberChangeForm
     add_form = TeamMemberCreationForm
 
-    list_display = ('full_name', 'mobile_no', 'email', 'team')
+    list_display = ('full_name', 'college_id', 'mobile_no', 'email', 'team')
     list_filter = ()
     fieldsets = (
-        (None, {'fields': ('full_name', 'mobile_no', 'email', 'team')}),
+        (None, {'fields': ('full_name', 'college_id', 'mobile_no', 'email', 'team')}),
     )
 
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('full_name', 'mobile_no', 'email', 'team')}
+            'fields': ('full_name', 'college_id', 'mobile_no', 'email', 'team')}
         ),
     )
     search_fields = ('full_name',)

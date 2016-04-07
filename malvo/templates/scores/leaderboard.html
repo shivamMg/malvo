@@ -2,16 +2,20 @@
 
 {% block content %}
 <div class="ui grid">
-  <div class="ui one wide column"></div>
-
-  <div class="ui fourteen wide column">  
+  <div class="ui fourteen wide centered column">
+    {% if app == 'mcqs' %}
+      <h2 class="ui header">MCQs Leaderboard</h2>
+    {% else %}
+      <h2 class="ui header">Programming Challenges Leaderboard</h2>
+    {% endif %}
     <div class="ui segment">
-      <table class="ui celled table">
+      <table class="ui celled striped table">
         <thead>
           <tr>
             <th>Rank</th>
-            <th>Team Name</th>
-            <th>{{ round_name }} Score</th>
+            <th>Team</th>
+            <th>Team Members</th>
+            <th>Score</th>
           </tr>
         </thead>
         <tbody>
@@ -20,8 +24,33 @@
             <td>
               <div class="ui ribbon label">{{ forloop.counter }}</div>
             </td>
-            <td>{{ team.name }}</td>
-            <td>{{ team.score }}</td>
+            <td>
+              <h3 class="ui header">
+                {{ team.team_name }}
+                {% if team.lang_pref == 'C' %}
+                  <a class="ui grey label">C</a>
+                {% else %}
+                  <a class="ui brown label">Java</a>
+                {% endif %}
+              </h3>
+            </td>
+            <td>
+              <ol class="ui list">
+              {% for member in team.member_list %}
+                <li value="">
+                  <strong>{{ member.full_name|title }}</strong>, {{ member.college_id }}
+                  <ul>
+                    <li value="-">{{ member.email }}</li>
+                    <li value="-">{{ member.mobile_no }}</li>
+                  </ul>
+                </li>
+              {% endfor %}
+              </ol>
+            </td>
+            <td>
+              {{ team.score }}<br>
+              <a href="{% url 'scores:evaluate' team_name=team.team_name app=app %}" target="_blank">Evaluate</a>
+            </td>
           </tr>
         {% endfor %}
         </tbody>

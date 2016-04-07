@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{% static 'css/gruvbox-dark.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="ui grid">
+  <div class="ui fourteen wide centered column">  
+    <div class="ui segment">
+      <h2 class="ui grey header">Challenge {{ question_no }}</h2>
+      <pre><code id="code" class="{{ language_class }}">
+
+      </code></pre>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="{% static 'js/highlight.pack.js' %}"></script>
+<script type="text/javascript">
+  var fileURL = "{{ file_url }}";
+  $(document).ready(function() {
+    $.get(fileURL, function(data) {
+      $("#code").text(data);
+
+      $('pre code').each(function(i, block) {
+        hljs.highlightBlock(block);
+      });
+    });
+  });
+</script>
+{% endblock %}

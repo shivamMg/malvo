@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import BaseUserManager
 from django.utils.translation import ugettext_lazy as _
-from django.core.validators import MinLengthValidator
+from django.core.validators import RegexValidator
 
 
 class TeamManager(BaseUserManager):
@@ -92,10 +92,15 @@ class TeamMember(models.Model):
     Team Member belonging to a Team
     """
     full_name = models.CharField(_('full name'), max_length=25)
+    college_id = models.CharField(
+        _('college id'),
+        max_length=5,
+        validators=[RegexValidator(r'^[0-9]{5,5}$', 'Invalid College ID')]
+    )
     mobile_no = models.CharField(
         _('mobile number'),
-        max_length=15,
-        validators=[MinLengthValidator(10, 'Invalid Mobile Number')]
+        max_length=10,
+        validators=[RegexValidator(r'^[0-9]{10,10}$', 'Invalid Mobile Number')]
     )
     email = models.EmailField(_('email address'), max_length=50)
     team = models.ForeignKey(Team)

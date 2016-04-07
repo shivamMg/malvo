@@ -3,18 +3,34 @@
 {% block content %}
 
   <div style="padding-left:10px;padding-right:10px;">
-    <div class="ui inverted segment">
-      <h2 class="ui inverted header">
-        {{ team_name }}
-        {% if team_lang_pref == 'C' %}
-          <a class="ui grey label">C</a>
-        {% else %}
-          <a class="ui brown label">Java</a>
-        {% endif %}
-        &middot; <a href="{% url 'scores:evaluate' team_name=team_name app='mcqs' %}">MCQs</a>
-        &middot; Programming Challenges
-      </h2>
-      <h3 class="ui inverted header">Total Score: {{ score }}</h3>
+    <div class="ui segment">
+      <div class="ui two column grid">
+        <div class="column">
+          <h2 class="ui grey header">
+          {{ team_name }}
+          {% if team_lang_pref == 'C' %}
+            <a class="ui grey label">C</a>
+          {% else %}
+            <a class="ui brown label">Java</a>
+          {% endif %}  
+          </h2>
+          <ol class="ui list">
+          {% for member in member_list %}
+            <li value="">
+              <strong>{{ member.full_name|title }}</strong>, {{ member.college_id }}
+              <ul>
+                <li value="-">{{ member.email }}</li>
+                <li value="-">{{ member.mobile_no }}</li>
+              </ul>
+            </li>
+          {% endfor %}
+          </ol>
+        </div>
+        <div class="column">
+          <h3 class="ui grey header">Programming Challenges</h3>
+          <h2 class="ui green header">Total Score: {{ score }}</h2>
+        </div>
+      </div>
     </div>
     <div class="ui segment">
       <table class="ui celled selectable structured table">
@@ -30,7 +46,13 @@
         <tbody>
         {% for answer in evaluated_list %}
           <tr>
-            <td rowspan="{{ answer.inputcase_list|length }}" class="ui center aligned">{{ answer.question_no }}</td>
+          {% if answer.inputcase_list %}
+            <td rowspan="{{ answer.inputcase_list|length }}" class="ui center aligned">
+              {{ answer.question_no }}<br>
+              <a href="{% url 'scores:display_file' team_name=team_name question_no=answer.question_no %}" target="_blank">
+                View Uploaded File
+              </a>
+            </td>
             {% for inputcase in answer.inputcase_list %}
               <td class="ui center aligned">{{ inputcase.inputcase_no }}</td>
               <td><pre>{{ inputcase.correct_output }}</pre></td>
@@ -47,7 +69,7 @@
                 <tr>
               {% endif %}
             {% endfor %}
-
+          {% endif %}
         {% endfor %}
         </tbody>
       </table>

@@ -20,7 +20,7 @@ class InputCase(models.Model):
     case_no = models.IntegerField(default=0)
     case_text = models.TextField()
     answer_case_text = models.TextField()
-    points = models.IntegerField()
+    points = models.IntegerField(default=1)
 
     class Meta:
         unique_together = ('question', 'case_no',)

@@ -7,7 +7,7 @@ $(document).ready(function() {
   timeVar = setInterval(function() {
     if (RemainingTime <= 0) {
       clearInterval(timeVar);
-      $("#timer").text("Time Over. Submitted answers will not be accepted.");
+      $("#timer").text("You've run out of time. Submitted answers will not be accepted.");
       return;
     }
     changeTimer();

@@ -29,7 +29,7 @@ def _get_question_statuses(team):
     """
     status_dict = {}
 
-    for ques in Question.objects.all():
+    for ques in Question.objects.filter(language=team.lang_pref):
         try:
             team.teammcqanswer_set.get(question_no=ques.question_no)
             status = 'S'

@@ -55,7 +55,7 @@
   <br><br>
 </div>
 
-    <div class="ui container">
+    <div>
       <div class="ui cards centered">
       {% for team in team_list %}
         <div class="card">
@@ -70,18 +70,12 @@
             </div>
             <div class="description">
             {% for member in team.member_list %}
-              <div><strong>{{ member.full_name|title }}</strong></div>
+              <div><strong>{{ member.full_name|title }}</strong>, {{ member.college_id }}</div>
               <div style="padding-left:10px;">
                 <div> &middot; {{ member.email }}</div>
                 <div> &middot; {{ member.mobile_no }}</div>
               </div>
             {% endfor %}
-            </div>
-          </div>
-          <div class="extra content">
-            <div class="ui two buttons">
-              <a href="{% url 'scores:evaluate' team_name=team.team_name app='mcqs' %}" class="ui teal button">MCQs</a>
-              <a href="{% url 'scores:evaluate' team_name=team.team_name app='coding' %}" class="ui blue button">Challenges</a>
             </div>
           </div>
         </div>

@@ -61,9 +61,10 @@ class TeamChangeForm(forms.ModelForm):
 class TeamMemberCreationForm(forms.ModelForm):
     class Meta:
         model = TeamMember
-        fields = ('full_name', 'mobile_no', 'email')
+        fields = ('full_name', 'college_id', 'mobile_no', 'email')
         labels = {
             'full_name': _('Full Name'),
+            'college_id': _('College ID'),
             'mobile_no': _('Mobile Number'),
             'email': _('Email'),
         }
@@ -72,9 +73,10 @@ class TeamMemberCreationForm(forms.ModelForm):
 class TeamMemberChangeForm(forms.ModelForm):
     class Meta:
         model = TeamMember
-        fields = ('full_name', 'mobile_no', 'email')
+        fields = ('full_name', 'college_id', 'mobile_no', 'email')
         labels = {
             'full_name': _('Full Name'),
+            'college_id': _('College ID'),
             'mobile_no': _('Mobile Number'),
             'email': _('Email'),
         }
