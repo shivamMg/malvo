@@ -6,7 +6,6 @@
   <div class="ui two column stackable grid">
     <div class="column">
       <div class="ui segment">
-      {% if status_dict %}
         <div class="ui divided selection list">
         {% for question_no, status in status_dict.items %}
           <a class="item" href="{% url 'coding:challenge' question_no=question_no %}">
@@ -19,15 +18,19 @@
               <div class="ui grey horizontal label right floated">Unattempted</div>
             {% endif %}
           </a>
+        {% empty %}
+          <h2>No information to display.</h2>
         {% endfor %}
         </div>
-      {% else %}
-        <h2>No information to display.</h2>
-      {% endif %}
       </div>
     </div>
 
     <div class="center aligned column">
+    {% if is_time_over %}
+      <div class="ui inverted segment">
+        <h2 class="ui red header">You time has exceeded the allotted limit.</h2>
+      </div>
+    {% endif %}
       <a class="ui primary button huge" href="{% url 'coding:challenge' question_no=1 %}">BEGIN</a>
     </div>
   </div>

@@ -12,32 +12,8 @@
 
 {% block content %}
 
-<div class="ui grid">
-  <div class="fourteen wide column centered">
-    <!-- Status Belt -->
-    <div class="ui inverted segment">
-    {% if status_dict %}
-      {% for question_no, status in status_dict.items %}
-        <a href="{% url 'coding:challenge' question_no=question_no %}"
-        class="ui label
-        {% if question_no == question.question_no %} large {% endif %}
-
-        {% if status == 'S' %}
-          green
-        {% elif status == 'PS' %}
-          olive
-        {% elif status == 'U' %}
-          grey
-        {% endif %}
-        ">
-          {{ question_no }}
-        </a>
-      {% endfor %}
-    {% else %}
-      <h2>No information to display.</h2>
-    {% endif %}
-    </div>
-
+<div class="ui grid" style="padding-left:20px;padding-right:20px;">
+  <div class="twelve wide column">
     <!-- Challenge Question -->
     <div class="ui segment">
       <h3><u>Challenge {{ question.question_no }}</u></h3>
@@ -50,18 +26,16 @@
 
         {% for case in case_list %}
           <div class="ui segment">
-            <div class="ui grid">
-              <div class="row">
-                <div class="eight wide column">
-                  <h5>Input Case #{{ case.input.case_no }}</h5>
-                  <pre>{{ case.input.case_text }}</pre>
-                </div>
-                <div class="eight wide column">
-                  <div class="ui form">
-                    <div class="field">
-                      <label>Output #{{ case.output.case_no }}</label>
-                      <textarea name="{{ case.output.field_name }}" rows="4">{{ case.output.previous_answer }}</textarea>
-                    </div>
+            <div class="ui two column grid">
+              <div class="column">
+                <h5>Input Case #{{ case.input.case_no }}</h5>
+                <pre>{{ case.input.case_text }}</pre>
+              </div>
+              <div class="column">
+                <div class="ui form">
+                  <div class="field">
+                    <label>Output #{{ case.output.case_no }}</label>
+                    <textarea name="{{ case.output.field_name }}" rows="4">{{ case.output.previous_answer }}</textarea>
                   </div>
                 </div>
               </div>
@@ -70,32 +44,57 @@
         {% endfor %}
         
         <div class="ui segment">
-          <div class="ui grid">
-            <div class="row">
-              <div class="eight wide column">
-                <button class="ui primary button large" type="submit">SUBMIT</button>
-              </div>
-              <div class="eight wide column">
-                <div class="inline field">
-                  {% for field in file_form %}
-                    {% if field.errors %}
-                      <div class="ui negative message">
-                        {{ field.errors.as_text }}  
-                      </div>
-                    {% endif %}
-                    <div class="ui right pointing red basic label">
-                      REQUIRED
+          <div class="ui two column grid">
+            <div class="column">
+              <button class="ui primary button large" type="submit">SUBMIT</button>
+            </div>
+            <div class="column">
+              <div class="inline field">
+                {% for field in file_form %}
+                  {% if field.errors %}
+                    <div class="ui negative message">
+                      {{ field.errors.as_text }}  
                     </div>
-                    {{ field.label_tag }}
-                    {{ field }}
-                  {% endfor %}
-                </div>
+                  {% endif %}
+                  <div class="ui right pointing red basic label">
+                    REQUIRED
+                  </div>
+                  {{ field.label_tag }}
+                  {{ field }}
+                {% endfor %}
               </div>
             </div>
           </div>
         </div>
 
     </form>
+  </div>
+
+  <div class="four wide column">
+    <!-- Timer -->
+    <div class="ui center aligned segment">
+      <h2 class="ui red inverted header" id="timer"></h2>
+    </div>
+
+    <!-- Status Panel -->
+    <div class="ui segment">
+      <div class="ui divided selection list">
+      {% for question_no, status in status_dict.items %}
+        <a class="item" href="{% url 'coding:challenge' question_no=question_no %}">
+          Challenge {{ question_no }}
+          {% if status == 'S' %}
+            <div class="ui green horizontal label right floated">Solved</div>
+          {% elif status == 'PS' %}
+            <div class="ui olive horizontal label right floated">Partially Solved</div>
+          {% elif status == 'U' %}
+            <div class="ui grey horizontal label right floated">Unattempted</div>
+          {% endif %}
+        </a>
+      {% empty %}
+        <div>No information to display.</div>
+      {% endfor %}
+      </div>
+    </div>
   </div>
 </div>
 
@@ -105,15 +104,7 @@
 <script type="text/javascript" src="{% static 'lib/showdown/dist/showdown.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/highlight.pack.js' %}"></script>
 <script type="text/javascript">
-  $(document).ready(function() {
-    /* Initialize Showdown MDtoHTML Converter */
-    var showdownConverter = new showdown.Converter();
-
-    $(".markdown").each(function(i, ele) {
-      var md = $(ele).text();
-      var html = showdownConverter.makeHtml(md);
-      $(ele).html(html);
-    });
-  });
+  var RemainingTime = {{ remaining_time }};
 </script>
+<script type="text/javascript" src="{% static 'coding/script.js' %}"></script>
 {% endblock %}

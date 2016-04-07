@@ -44,6 +44,7 @@ class Team(AbstractBaseUser):
     team_name = models.SlugField(_('team name'), max_length=25, unique=True)
     lang_pref = models.CharField(_('programming language preference'),
                                  max_length=1, choices=PROG_LANGS, default='0')
+    coding_start_time = models.DateTimeField(_('coding start time'), null=True)
     is_active = models.BooleanField(_('active'), default=True)
     is_admin = models.BooleanField(_('admin status'), default=False)
 

@@ -18,14 +18,15 @@ class TeamAdmin(BaseUserAdmin):
     list_display = ('team_name', 'is_admin')
     list_filter = ('is_admin',)
     fieldsets = (
-        (None, {'fields': ('team_name', 'lang_pref', 'password')}),
+        (None, {'fields': ('team_name', 'lang_pref', 'password', 'coding_start_time')}),
         ('Permissions', {'fields': ('is_admin',)}),
     )
 
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('team_name', 'lang_pref', 'password1', 'password2')}
+            'fields': ('team_name', 'lang_pref', 'coding_start_time',
+                'password1', 'password2')}
         ),
     )
     search_fields = ('team_name',)

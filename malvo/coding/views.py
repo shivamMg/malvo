@@ -2,10 +2,13 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
 
 from .models import Question
 from teams.forms import UploadFileForm
 from teams.models import TeamCodingAnswer, Team, UploadFileModel
+
+ALLOTTED_HOURS = 1
 
 
 def _get_case_list(question):
@@ -69,13 +72,40 @@ def _get_question_statuses(team):
     return status_dict
 
 
+def _is_time_over(team):
+    """
+    Check if time exceeded the allotted limit.
+    """
+    # If `coding_start_time` is not NULL in db
+    if team.coding_start_time is not None:
+        time_diff = timezone.now() - team.coding_start_time
+
+        if time_diff.total_seconds() > ALLOTTED_HOURS * 3600:
+            return True
+
+    return False
+
+
+def _get_remaining_time(team):
+    """
+    Returns remaining time in seconds from allotted time.
+    """
+    # If `coding_start_time` is not NULL in db
+    if team.coding_start_time is not None:
+        time_diff = timezone.now() - team.coding_start_time
+        remaining_time = ALLOTTED_HOURS * 3600 - time_diff.total_seconds()
+
+        return remaining_time
+
+
 @login_required
 def index(request):
-    team = Team.objects.get(team_name=request.user)
+    team = get_object_or_404(Team, team_name=request.user)
 
     status_dict = _get_question_statuses(team)
 
     return render(request, 'coding/index.html', {
+        'is_time_over': _is_time_over(team),
         'status_dict': status_dict,}
     )
 
@@ -83,7 +113,15 @@ def index(request):
 @login_required
 def challenge(request, question_no):
     question = get_object_or_404(Question, question_no=question_no)
-    team = Team.objects.get(team_name=request.user)
+    team = get_object_or_404(Team, team_name=request.user)
+
+    # Save current time if `coding_start_time` is NULL in db
+    if team.coding_start_time is None:
+        team.coding_start_time = timezone.now()
+        team.save()
+
+    if _is_time_over(team):
+        return HttpResponseRedirect(reverse('coding:index'))
 
     case_list = _get_case_list(question)
     status_dict = _get_question_statuses(team)
@@ -135,5 +173,6 @@ def challenge(request, question_no):
         'question': question,
         'case_list': case_list,
         'status_dict': status_dict,
-        'file_form': file_form,}
+        'file_form': file_form,
+        'remaining_time': _get_remaining_time(team),}
     )
