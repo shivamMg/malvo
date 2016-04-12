@@ -12,87 +12,89 @@
 
 {% block content %}
 
-<div class="ui grid" style="padding-left:20px;padding-right:20px;">
-  <div class="twelve wide column">
-    <!-- Challenge Question -->
-    <div class="ui segment">
-      <h3><u>Challenge {{ question.question_no }}</u></h3>
-      <div id="question_text" class="markdown">{{ question.question_text }}</div>
-    </div>
+<div class="padded-div">
+  <div class="ui grid">
+    <div class="twelve wide column">
+      <!-- Challenge Question -->
+      <div class="ui segment">
+        <h3><u>Challenge {{ question.question_no }}</u></h3>
+        <div id="question_text" class="markdown">{{ question.question_text }}</div>
+      </div>
 
-    <!-- Challenge Cases -->
-    <form method="post" action="{{ request.path }}" enctype="multipart/form-data">
-    {% csrf_token %}
+      <!-- Challenge Cases -->
+      <form method="post" action="{{ request.path }}" enctype="multipart/form-data">
+      {% csrf_token %}
 
-        {% for case in case_list %}
-          <div class="ui segment">
-            <div class="ui two column grid">
-              <div class="column">
-                <h5>Input Case #{{ case.input.case_no }}</h5>
-                <pre>{{ case.input.case_text }}</pre>
-              </div>
-              <div class="column">
-                <div class="ui form">
-                  <div class="field">
-                    <label>Output #{{ case.output.case_no }}</label>
-                    <textarea name="{{ case.output.field_name }}" rows="4">{{ case.output.previous_answer }}</textarea>
+          {% for case in case_list %}
+            <div class="ui segment">
+              <div class="ui two column grid">
+                <div class="column">
+                  <h5>Input Case #{{ case.input.case_no }}</h5>
+                  <pre>{{ case.input.case_text }}</pre>
+                </div>
+                <div class="column">
+                  <div class="ui form">
+                    <div class="field">
+                      <label>Output #{{ case.output.case_no }}</label>
+                      <textarea name="{{ case.output.field_name }}" rows="4">{{ case.output.previous_answer }}</textarea>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        {% endfor %}
-        
-        <div class="ui segment">
-          <div class="ui two column grid">
-            <div class="column">
-              <button class="ui primary button large" type="submit">SUBMIT</button>
-            </div>
-            <div class="column">
-              <div class="inline field">
-                {% for field in file_form %}
-                  {% if field.errors %}
-                    <div class="ui negative message">
-                      {{ field.errors.as_text }}  
+          {% endfor %}
+
+          <div class="ui segment">
+            <div class="ui two column grid">
+              <div class="column">
+                <button class="ui primary button large" type="submit">SUBMIT</button>
+              </div>
+              <div class="column">
+                <div class="inline field">
+                  {% for field in file_form %}
+                    {% if field.errors %}
+                      <div class="ui negative message">
+                        {{ field.errors.as_text }}
+                      </div>
+                    {% endif %}
+                    <div class="ui right pointing red basic label">
+                      REQUIRED
                     </div>
-                  {% endif %}
-                  <div class="ui right pointing red basic label">
-                    REQUIRED
-                  </div>
-                  {{ field.label_tag }}
-                  {{ field }}
-                {% endfor %}
+                    {{ field.label_tag }}
+                    {{ field }}
+                  {% endfor %}
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-    </form>
-  </div>
-
-  <div class="four wide column">
-    <!-- Timer -->
-    <div class="ui center aligned segment">
-      <h2 class="ui red inverted header" id="timer"></h2>
+      </form>
     </div>
 
-    <!-- Status Panel -->
-    <div class="ui segment">
-      <div class="ui divided selection list">
-      {% for question_no, status in status_dict.items %}
-        <a class="item" href="{% url 'coding:challenge' question_no=question_no %}">
-          Challenge {{ question_no }}
-          {% if status == 'S' %}
-            <div class="ui green horizontal label right floated">Solved</div>
-          {% elif status == 'PS' %}
-            <div class="ui olive horizontal label right floated">Partially Solved</div>
-          {% elif status == 'U' %}
-            <div class="ui grey horizontal label right floated">Unattempted</div>
-          {% endif %}
-        </a>
-      {% empty %}
-        <div>No information to display.</div>
-      {% endfor %}
+    <div class="four wide column">
+      <!-- Timer -->
+      <div class="ui center aligned segment">
+        <h2 class="ui red inverted header" id="timer"></h2>
+      </div>
+
+      <!-- Status Panel -->
+      <div class="ui segment">
+        <div class="ui divided selection list">
+        {% for question_no, status in status_dict.items %}
+          <a class="item" href="{% url 'coding:challenge' question_no=question_no %}">
+            Challenge {{ question_no }}
+            {% if status == 'S' %}
+              <div class="ui green horizontal label right floated">Solved</div>
+            {% elif status == 'PS' %}
+              <div class="ui olive horizontal label right floated">Partially Solved</div>
+            {% elif status == 'U' %}
+              <div class="ui grey horizontal label right floated">Unattempted</div>
+            {% endif %}
+          </a>
+        {% empty %}
+          <div>No information to display.</div>
+        {% endfor %}
+        </div>
       </div>
     </div>
   </div>

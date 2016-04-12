@@ -25,13 +25,21 @@
       </div>
     </div>
 
-    <div class="center aligned column">
+    <div class="column">
+      <div class="ui segment">
+        <h2 class="ui grey header">Instructions</h2>
+        <ul class="ui list">
+          <li>Some instruction 1</li>
+          <li>Some instruction 2</li>
+        </ul>
+      </div>
     {% if is_time_over %}
       <div class="ui inverted segment">
-        <h2 class="ui red header">You've run out of time.</h2>
+        <h2 class="ui red header center aligned">You've run out of time.</h2>
       </div>
+    {% else %}
+      <a class="ui primary button huge" href="{% url 'coding:challenge' question_no=1 %}">ENTER</a>
     {% endif %}
-      <a class="ui primary button huge" href="{% url 'coding:challenge' question_no=1 %}">BEGIN</a>
     </div>
   </div>
 </div>

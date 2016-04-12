@@ -15,11 +15,12 @@ import json
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_DIR = os.path.join(os.path.dirname(BASE_DIR), 'data')
 
 
-# Extract secret key from `conf/secrets.json`
+# Extract data from `conf/secrets.json`
 try:
-    secrets_file = os.path.join(BASE_DIR, 'conf', 'secrets.json')
+    secrets_file = os.path.join(DATA_DIR, 'conf', 'secrets.json')
     with open(secrets_file, 'r') as handle:
         SECRETS = json.load(handle)
 except IOError:
@@ -36,7 +37,7 @@ SECRET_KEY = SECRETS.get('secret_key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = SECRETS.get('allowed_hosts', [])
 
 
 # Application definition
@@ -91,9 +92,12 @@ WSGI_APPLICATION = 'malvo.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'malvo',
+        'USER': SECRETS.get('db_user', ''),
+        'HOST': SECRETS.get('db_host', ''),
+        'PASSWORD': SECRETS.get('db_password', ''),
+    },
 }
 
 
@@ -139,6 +143,10 @@ STATICFILES_DIRS = [
 ]
 
 
+# Media
+MEDIA_URL = '/media/'
+
+
 # Login Redirect URL
 
 LOGIN_REDIRECT_URL = '/'
@@ -150,7 +158,7 @@ LOGIN_URL = '/team/login/'
 AUTH_USER_MODEL = 'teams.Team'
 
 
-# Media
+# Media and Static Roots
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(DATA_DIR, 'media_root')
+STATIC_ROOT = os.path.join(DATA_DIR, 'static_root')

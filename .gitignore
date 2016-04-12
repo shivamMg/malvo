@@ -10,15 +10,9 @@ venv/
 bower_components/
 lib/
 
-# Configurations directory
-conf/
-
-# Generated database
-malvo/db.sqlite3
+# Data directory
+data/
 
 # Generated files
 malvo/static/mcqs/c_mcq_dump.json
 malvo/static/mcqs/java_mcq_dump.json
-
-# Media directory
-media/

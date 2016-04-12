@@ -9,3 +9,8 @@ body {
 .footer {
   padding-bottom: 6em;
 }
+
+.padded-div {
+  padding-left: 30px;
+  padding-right: 30px;
+}
