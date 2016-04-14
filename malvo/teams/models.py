@@ -51,7 +51,7 @@ class Team(AbstractBaseUser):
     objects = TeamManager()
 
     USERNAME_FIELD = 'team_name'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['lang_pref']
 
     class Meta:
         verbose_name = _('team')
