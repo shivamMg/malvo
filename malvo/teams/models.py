@@ -19,7 +19,7 @@ class TeamManager(BaseUserManager):
         team.save(using=self._db)
         return team
 
-    def create_superuser(self, team_name, password):
+    def create_superuser(self, team_name, password, lang_pref):
         """
         Creates a superuser team
         """
@@ -27,6 +27,8 @@ class TeamManager(BaseUserManager):
             team_name=team_name,
             password=password
         )
+        # Set Language preference for superuser
+        team.lang_pref = lang_pref
         team.is_admin = True
         team.save(using=self._db)
         return team
