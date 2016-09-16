@@ -36,10 +36,8 @@
 {% block scripts %}
 <script type="text/javascript" src="{% static 'lib/showdown/dist/showdown.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/highlight.pack.js' %}"></script>
+<script type="text/javascript" src="{% static 'lib/jquery.cookie/jquery.cookie.js' %}"></script>
 <script type="text/javascript">
-  /* CSRF Token */
-  var csrfmiddlewaretoken = "{{ csrf_token }}";
-  
   /* Previous answers
    * `Answers` contains question numbers as keys and answered choices as values.
    * Both keys and values are strings.

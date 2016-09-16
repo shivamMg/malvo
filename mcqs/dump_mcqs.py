@@ -35,8 +35,8 @@ def dump_mcqs_to_file():
     Writes to MCQ JSON files in `static/mcqs` directory (if they does not exist)
     """
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    java_filepath = os.path.join(base_dir, 'static', 'mcqs', JAVA_FILENAME)
-    c_filepath = os.path.join(base_dir, 'static', 'mcqs', C_FILENAME)
+    java_filepath = os.path.join(base_dir, 'malvo', 'static', 'mcqs', JAVA_FILENAME)
+    c_filepath = os.path.join(base_dir, 'malvo', 'static', 'mcqs', C_FILENAME)
 
     lang_files = {
         'J': java_filepath,

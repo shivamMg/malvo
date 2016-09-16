@@ -10,6 +10,8 @@ var McqObj = {
 };
 
 $(document).ready(function() {
+  /* CSRF Token */
+  var csrfmiddlewaretoken = $.cookie("csrftoken");
 
   $.getJSON(mcqFilepath, function(data) {
     console.log("MCQs downloaded.");
