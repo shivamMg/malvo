@@ -10,9 +10,6 @@ venv/
 bower_components/
 lib/
 
-# Data directory
-data/
-
 # Generated files
 malvo/static/mcqs/c_mcq_dump.json
 malvo/static/mcqs/java_mcq_dump.json
