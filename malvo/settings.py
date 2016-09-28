@@ -92,11 +92,12 @@ WSGI_APPLICATION = 'malvo.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'malvo',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': SECRETS.get('db_name', ''),
         'USER': SECRETS.get('db_user', ''),
         'HOST': SECRETS.get('db_host', ''),
-        'PASSWORD': SECRETS.get('db_password', ''),
+        'PORT': SECRETS.get('db_port', ''),
+        # 'PASSWORD': SECRETS.get('db_password', ''),
     },
 }
 
