@@ -8,7 +8,6 @@ RUN apt-get update && apt-get install -y \
     git \
     ca-certificates \
     curl \
-    nginx \
 && update-ca-certificates && apt-get clean -y
 
 # Install Nodejs
@@ -34,8 +33,3 @@ ADD .bowerrc /code/
 RUN bower install --allow-root && bower cache clean --allow-root
 
 ADD data/conf/secrets.json /code/data/conf/
-
-# Nginx config
-RUN rm -v /etc/nginx/nginx.conf
-ADD data/conf/nginx.conf /etc/nginx
-RUN echo "daemon off;" >> /etc/nginx/nginx.conf

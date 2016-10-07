@@ -1,13 +1,22 @@
 version: '2'
 services:
-    db:
-        image: postgres
-    web:
+    nginx:
+        image: nginx
+        ports:
+            - '8000:80'
+        links:
+            - 'app:gunicorn'
+        volumes_from:
+            - app
+        command: /bin/bash -c "cp /code/data/conf/nginx.conf /etc/nginx/nginx.conf && nginx -g 'daemon off;'"
+    app:
         build: .
         command: ./docker-entrypoint.sh
         volumes:
-            - .:/code
-        ports:
-            - '8000:8000'
+            - '.:/code'
         depends_on:
             - db
+        expose:
+            - '8001'
+    db:
+        image: postgres

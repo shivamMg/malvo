@@ -12,5 +12,4 @@ touch /code/data/logs/nginx-error.log
 # python manage.py runserver 0.0.0.0:8000
 gunicorn malvo.wsgi:application --name malvo --bind 0.0.0.0:8001 --workers 3 \
     --log-file=/code/data/logs/gunicorn.log \
-    --access-logfile=/code/data/logs/gunicorn-access.log --daemon
-service nginx start
+    --access-logfile=/code/data/logs/gunicorn-access.log
