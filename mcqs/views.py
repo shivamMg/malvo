@@ -3,10 +3,11 @@ import json
 from django.shortcuts import render, get_list_or_404
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.core.cache import cache
 from django.contrib.auth.decorators import login_required
 
 from .models import Question
-from .dump_mcqs import dump_mcqs_to_file, JAVA_FILENAME, C_FILENAME
+from .dump_mcqs import set_mcqs_in_cache
 from teams.models import Team, TeamMcqAnswer
 
 
@@ -46,13 +47,13 @@ def index(request):
     team, question_list = _team_and_question_list(request.user)
     status_dict = _get_question_statuses(team)
 
-    return render(request, 'mcqs/index.html', {'status_dict': status_dict,})
+    return render(request, 'mcqs/index.html', {'status_dict': status_dict})
 
 
 @login_required
 def mcq(request):
     team, question_list = _team_and_question_list(request.user)
-    dump_mcqs_to_file()
+    set_mcqs_in_cache()
 
     answer_dict = {}
 
@@ -60,14 +61,14 @@ def mcq(request):
         answer_dict[str(ans.question_no)] = ans.choice_no
 
     if team.lang_pref == 'J':
-        mcq_filename = JAVA_FILENAME
+        cache_key = 'java_mcqs'
     else:
-        mcq_filename = C_FILENAME
+        cache_key = 'c_mcqs'
 
     return render(request, 'mcqs/mcq.html', {
         'previous_answers': json.dumps(answer_dict),
-        'mcq_filename': mcq_filename,}
-    )
+        'mcqs': cache.get(cache_key),
+    })
 
 
 @login_required
@@ -82,7 +83,7 @@ def answer(request):
                 obj, is_created = TeamMcqAnswer.objects.update_or_create(
                     question_no=ques.question_no,
                     team=team,
-                    defaults={'choice_no': choice_no,}
+                    defaults={'choice_no': choice_no}
                 )
 
     return HttpResponseRedirect(reverse('mcqs:index'))

@@ -1,10 +1,8 @@
-import os
 import json
 
-from .models import Question
+from django.core.cache import cache
 
-JAVA_FILENAME = 'java_mcq_dump.json'
-C_FILENAME = 'c_mcq_dump.json'
+from .models import Question
 
 
 def extract_mcqs(lang_code):
@@ -30,21 +28,20 @@ def extract_mcqs(lang_code):
     return json.dumps(data)
 
 
-def dump_mcqs_to_file():
+def set_mcqs_in_cache():
     """
-    Writes to MCQ JSON files in `static/mcqs` directory (if they does not exist)
+    Set MCQs in cache if they have changed or have not been set.
     """
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    java_filepath = os.path.join(base_dir, 'malvo', 'static', 'mcqs', JAVA_FILENAME)
-    c_filepath = os.path.join(base_dir, 'malvo', 'static', 'mcqs', C_FILENAME)
-
-    lang_files = {
-        'J': java_filepath,
-        'C': c_filepath,
+    languages = {
+        'C': 'c_mcqs',
+        'J': 'java_mcqs',
     }
 
-    for lang_code, filepath in lang_files.items():
-        if not os.path.isfile(filepath):
-            data = extract_mcqs(lang_code)
-            with open(filepath, 'w') as json_file:
-                json_file.write(data)
+    # If MCQs have been changed or have not been created
+    if not cache.get('mcqs_flag', False):
+        for lang_code, cache_key in languages.items():
+            mcqs_json = extract_mcqs(lang_code)
+            cache.set(cache_key, mcqs_json)
+
+        # Mark MCQs as unchanged
+        cache.set('mcqs_flag', True)

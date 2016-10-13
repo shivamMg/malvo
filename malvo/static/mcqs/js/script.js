@@ -10,14 +10,11 @@ var McqObj = {
 };
 
 $(document).ready(function() {
-  /* CSRF Token */
-  var csrfmiddlewaretoken = $.cookie("csrftoken");
+    /* CSRF Token */
+    var csrfmiddlewaretoken = $.cookie("csrftoken");
 
-  $.getJSON(mcqFilepath, function(data) {
-    console.log("MCQs downloaded.");
-
-    McqObj.questions = data;
-    McqObj.len = data.length;
+    McqObj.questions = MCQs;
+    McqObj.len = MCQs.length;
     McqObj.curQuesIndex = -1;
 
     switchQuestion(0);
@@ -35,11 +32,6 @@ $(document).ready(function() {
     }
     /* Add buttons to panel */
     panel.html(panelButtons);
-
-  }).fail(function() {
-    alert("Error occured while downloading MCQs. Try reloading page.");
-    console.log("MCQs not downloaded.");
-  });
 
   $(document).on("click", ".qno-panel-label", function() {
     var $this = $(this);
@@ -68,7 +60,7 @@ $(document).ready(function() {
     switchQuestion(i);
   };
 
-  window.switchQuestion = function switchQuestion(index) {
+  function switchQuestion(index) {
     if (index == McqObj.curQuesIndex) {
       return;
     }
@@ -104,7 +96,7 @@ $(document).ready(function() {
 
     McqObj.curQuesIndex = index;
 
-  };
+  }
 
   window.selectChoice = function selectChoice(ele) {
     var selectedChoiceId = $(ele).attr("id");

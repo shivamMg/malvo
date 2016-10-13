@@ -42,10 +42,10 @@
    * `Answers` contains question numbers as keys and answered choices as values.
    * Both keys and values are strings.
    */
-  var Answers = JSON.parse("{{ previous_answers|escapejs }}");
+  var Answers = {{ previous_answers|safe }};
 
-  /* Filepath for MCQs JSON dump */
-  var mcqFilepath = "/static/mcqs/" + "{{ mcq_filename }}";
+  /* MCQs */
+  var MCQs = {{ mcqs|safe }};
 
   /* Initialize Showdown MDtoHTML Converter */
   var showdownConverter = new showdown.Converter();

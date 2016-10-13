@@ -16,7 +16,10 @@ services:
             - '.:/code'
         depends_on:
             - db
+            - cache
         expose:
             - '8001'
     db:
         image: postgres
+    cache:
+        image: redis
