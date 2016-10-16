@@ -2,9 +2,8 @@ import os
 import json
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 DATA_DIR = os.path.join(BASE_DIR, 'data')
-
 
 # Extract data from `conf/secrets.json`
 try:
@@ -12,9 +11,7 @@ try:
     with open(secrets_file, 'r') as handle:
         SECRETS = json.load(handle)
 except IOError:
-    SECRETS = {
-        'secret_key': 'xyz',
-    }
+    raise IOError('Config file (`data/conf/secrets.json`) not found.')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
@@ -45,6 +42,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -72,15 +70,18 @@ TEMPLATES = [
     },
 ]
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': SECRETS.get('cache_location', ''),
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-        },
+
+# If Redis Cache location is set in config
+if SECRETS.get('redis_cache', False):
+    CACHES = {
+        'default': {
+            'BACKEND': 'django_redis.cache.RedisCache',
+            'LOCATION': SECRETS.get('redis_cache'),
+            'OPTIONS': {
+                'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            },
+        }
     }
-}
 
 WSGI_APPLICATION = 'malvo.wsgi.application'
 
@@ -95,7 +96,7 @@ DATABASES = {
         'USER': SECRETS.get('db_user', ''),
         'HOST': SECRETS.get('db_host', ''),
         'PORT': SECRETS.get('db_port', ''),
-        # 'PASSWORD': SECRETS.get('db_password', ''),
+        'PASSWORD': SECRETS.get('db_password', ''),
     },
 }
 

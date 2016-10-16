@@ -12,6 +12,8 @@ services:
     app:
         build: .
         command: ./docker-entrypoint.sh
+        environment:
+            MALVO_PLATFORM: 'prod'
         volumes:
             - '.:/code'
         depends_on:

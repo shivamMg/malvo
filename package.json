@@ -1,0 +1,20 @@
+{
+    "name": "malvo",
+    "description": "Programming contest platform",
+    "engines": {
+        "node": "4.1.1"
+    },
+    "dependencies": {
+        "bower": "^1.7.9"
+    },
+    "scripts": {
+        "postinstall": "./node_modules/bower/bin/bower install"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/shivamMg/malvo.git"
+    },
+    "cacheDirectories": ["node_modules", "malvo/static/lib"],
+    "author": "shivamMg",
+    "license": "GPL-3.0"
+}

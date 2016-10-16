@@ -18,7 +18,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic import TemplateView
 
-from . import settings
+from .settings import common
 
 urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='homepage.html'),
@@ -28,4 +28,4 @@ urlpatterns = [
     url(r'^coding/', include('coding.urls', namespace='coding')),
     url(r'^team/', include('teams.urls', namespace='teams')),
     url(r'^scores/', include('scores.urls', namespace='scores')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(common.MEDIA_URL, document_root=common.MEDIA_ROOT)

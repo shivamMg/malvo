@@ -1,0 +1,20 @@
+{
+    "name": "malvo",
+    "description": "Programming contest platform",
+    "repository": "https://github.com/shivamMg/malvo",
+    "addons": ["heroku-postgresql"],
+    "env": {
+        "MALVO_PLATFORM": {
+            "description": "Set deployment platform for malvo",
+            "generator": "secret"
+        }
+    },
+    "buildpacks": [
+        {
+            "url": "heroku/python"
+        },
+        {
+            "url": "heroku/nodejs"
+        }
+    ]
+ }
