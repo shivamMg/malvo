@@ -1,6 +1,6 @@
 import json
 
-from django.shortcuts import render, get_list_or_404
+from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.core.cache import cache
@@ -17,7 +17,7 @@ def _team_and_question_list(team_name):
     team language preference
     """
     team = Team.objects.get(team_name=team_name)
-    question_list = get_list_or_404(Question, language=team.lang_pref)
+    question_list = Question.objects.filter(language='J')
     return (team, question_list)
 
 
@@ -44,15 +44,15 @@ def _get_question_statuses(team):
 
 @login_required
 def index(request):
-    team, question_list = _team_and_question_list(request.user)
+    team = Team.objects.get(team_name=request.user)
     status_dict = _get_question_statuses(team)
 
     return render(request, 'mcqs/index.html', {'status_dict': status_dict})
 
 
 @login_required
-def mcq(request):
-    team, question_list = _team_and_question_list(request.user)
+def questions(request):
+    team = Team.objects.get(team_name=request.user)
     set_mcqs_in_cache()
 
     answer_dict = {}
@@ -65,7 +65,7 @@ def mcq(request):
     else:
         cache_key = 'c_mcqs'
 
-    return render(request, 'mcqs/mcq.html', {
+    return render(request, 'mcqs/questions.html', {
         'previous_answers': json.dumps(answer_dict),
         'mcqs': cache.get(cache_key),
     })

@@ -32,6 +32,6 @@ def answer(request, question_no):
         if question.question_no == question_count:
             return HttpResponseRedirect(reverse('mcqs:index'))
         else:
-            return HttpResponseRedirect(reverse('mcqs:mcq', args=(
+            return HttpResponseRedirect(reverse('mcqs:questions', args=(
                 question.question_no + 1,
             )))

@@ -13,35 +13,23 @@
     {% block stylesheets %}{% endblock %}
   </head>
   <body>
-    <div class="navbar">
-    {% if request.path == '/' %}
-      <div class="ui inverted large fixed menu" style="background-color:#000;">
-    {% else %}
-      <div class="ui black inverted large fixed menu">
-    {% endif %}
-        <div class="ui container">
-          <a href="/" class="item header">malvo</a>
-          <a href="{% url 'mcqs:index' %}" class="item">MCQs</a>
-          <a href="{% url 'coding:index' %}" class="item">Prog. Challenges</a>
-          {% if user.is_admin %}
-            <a href="{% url 'scores:index' %}" class="item">Scores</a>
-          {% endif %}
-
-          <div class="right menu">
-          {% if user.is_authenticated %}
-            <a href="{% url 'teams:profile' %}" class="item">Profile</a>
-            <a href="{% url 'teams:logout' %}" class="item">Logout</a>
-          {% else %}
-            <a href="{% url 'teams:register' %}" class="item">Register</a>
-            <a href="{% url 'teams:login' %}" class="item">Login</a>
-          {% endif %}
-          </div>
-        </div>
+    <div class="wrapper">
+      <div class="navbar">
+        {% include 'navbar.html' %}
       </div>
-    </div>
-    {% block content %}{% endblock %}
+      <div>
+        {% block content %}{% endblock %}
+      </div>
 
-    <div class="footer"></div>
+      <div class="push"></div>
+    </div>
+
+    {% if request.path != '/' %}
+      <div class="footer">
+        {% include 'footer.html' %}
+      </div>
+    {% endif %}
+
     <script type="text/javascript" src="{% static 'lib/jquery/dist/jquery.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'lib/semantic/dist/semantic.min.js' %}"></script>
     {% block scripts %}{% endblock %}
