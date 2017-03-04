@@ -8,6 +8,17 @@
 
 {% block content %}
 
+<div class="ui basic small modal">
+  <div class="ui header">
+    Answers submitted successfully.
+  </div>
+  <div class="actions">
+    <a class="ui green ok inverted button" href="{% url 'mcqs:index' %}">
+      Exit Arena
+    </a>
+  </div>
+</div>
+
 <div class="ui grid" style="min-height: 700px;">
   <div class="one wide column"></div>
 

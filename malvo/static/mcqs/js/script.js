@@ -13,6 +13,9 @@ $(document).ready(function() {
     /* CSRF Token */
     var csrfmiddlewaretoken = $.cookie("csrftoken");
 
+    // Sort MCQs according to qno
+    MCQs.sort(function(a, b) { return a.qno - b.qno; });
+
     McqObj.questions = MCQs;
     McqObj.len = MCQs.length;
     McqObj.curQuesIndex = -1;
@@ -116,18 +119,21 @@ $(document).ready(function() {
 
     /* If all questions have not been solved */
     if (Object.keys(Answers).length != McqObj.len) {
-      var submitAnswers = confirm("You have not answered all questions. Would you still like to continue uploading answers?");
+      // var submitAnswers = confirm("You have not answered all questions. Would you still like to continue uploading answers?");
       /* If user cancels confirmation, don't upload answers */
-      if (submitAnswers === false) {
-        return;
-      }
+      // if (submitAnswers === false) {
+      //   return;
+      // }
+      alert("Please answer all questions.");
+      return;
     }
 
-    var data = Answers;
+    var data = $.extend({}, Answers);
     data.csrfmiddlewaretoken = csrfmiddlewaretoken;
     $.post("/mcqs/answer/", data, function() {
       console.log("Answers uploaded.");
-      alert("Answers uploaded.");
+      $(".ui.basic.small.modal").modal("show");
+      // alert("Answers uploaded.");
     }).fail(function() {
       console.log("Error occured while uploading answers.");
       alert("Error occured while uploading answers.");

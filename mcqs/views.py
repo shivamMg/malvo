@@ -1,8 +1,8 @@
 import json
+from collections import OrderedDict
 
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
-from django.core.urlresolvers import reverse
+from django.http import HttpResponse
 from django.core.cache import cache
 from django.contrib.auth.decorators import login_required
 
@@ -17,7 +17,7 @@ def _team_and_question_list(team_name):
     team language preference
     """
     team = Team.objects.get(team_name=team_name)
-    question_list = Question.objects.filter(language='J')
+    question_list = Question.objects.filter(language=team.lang_pref)
     return (team, question_list)
 
 
@@ -46,8 +46,10 @@ def _get_question_statuses(team):
 def index(request):
     team = Team.objects.get(team_name=request.user)
     status_dict = _get_question_statuses(team)
+    ordered_status_dict = OrderedDict(sorted(status_dict.items()))
 
-    return render(request, 'mcqs/index.html', {'status_dict': status_dict})
+    return render(request, 'mcqs/index.html',
+                  {'status_dict': ordered_status_dict})
 
 
 @login_required
@@ -83,7 +85,7 @@ def answer(request):
                 obj, is_created = TeamMcqAnswer.objects.update_or_create(
                     question_no=ques.question_no,
                     team=team,
-                    defaults={'choice_no': choice_no}
-                )
+                    defaults={'choice_no': choice_no})
 
-    return HttpResponseRedirect(reverse('mcqs:index'))
+    # return HttpResponse(reverse('mcqs:index'))
+    return HttpResponse({'status': 'ok'})
