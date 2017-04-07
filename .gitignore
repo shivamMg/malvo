@@ -10,5 +10,17 @@ venv/
 bower_components/
 lib/
 
-# Config file
+# User defined config
 data/conf/secrets.json
+data/conf/db.env
+data/conf/app.env
+
+# Logs (docker)
+data/logs/gunicorn/gunicorn.log
+data/logs/gunicorn/access.log
+data/logs/nginx/access.log
+data/logs/nginx/error.log
+data/logs/data
+
+# Postgres data (docker)
+data/db/data/

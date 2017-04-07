@@ -71,18 +71,6 @@ TEMPLATES = [
 ]
 
 
-# If Redis Cache location is set in config
-if SECRETS.get('redis_cache', False):
-    CACHES = {
-        'default': {
-            'BACKEND': 'django_redis.cache.RedisCache',
-            'LOCATION': SECRETS.get('redis_cache'),
-            'OPTIONS': {
-                'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-            },
-        }
-    }
-
 WSGI_APPLICATION = 'malvo.wsgi.application'
 
 

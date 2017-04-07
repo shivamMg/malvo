@@ -10,7 +10,8 @@ Programming Contest Platform
 - [Screenshot 4](http://imgur.com/pqQVzzc)
 - [Screenshot 5](http://imgur.com/F0t6Ni6)
 
-## Instructions for local development
+
+## Instructions for Local Development
 
 1. Create a virtualenv instance and activate it.
 
@@ -71,7 +72,6 @@ bower install
 ./manage.py runserver
 ```
 
-
 ## Production Deployment
 
 Collect all the static files inside `data/static_root`:
@@ -88,6 +88,40 @@ Start application through `gunicorn`.
 gunicorn malvo.wsgi:application --name malvo --bind 0.0.0.0:8000 --workers 3
 ```
 
+
+## Docker Support
+
+Docker can be used for both development and production. You're going to need [Docker](https://docs.docker.com/engine/installation/) and [Docker Compose](https://docs.docker.com/compose/install/).
+
+1. Create `data/conf/secrets.json` file as explained in the above segment.
+
+2. Create `data/conf/db.env` with the following:
+
+```
+POSTGRES_DB=malvo
+POSTGRES_USER=malvo
+POSTGRES_PASSWORD=your-psql-user-password
+```
+
+3. Create `data/conf/app.env` with the following:
+
+```
+MALVO_ADMIN_PASSWORD=your-admin-team-password
+```
+
+4. For Local development run:
+
+```bash
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+```
+
+Or, for Production deployment run:
+
+```bash
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up
+```
+
+
 ## Heroku Deployment
 
 ```bash
@@ -98,3 +132,8 @@ heroku config:set MALVO_PLATFORM='heroku'
 git push heroku master
 heroku run python manage.py migrate
 ```
+
+## Credits
+
+`data/wait-for-it.sh` has been taken from (unmodified) [vishnubob/wait-for-it](https://github.com/vishnubob/wait-for-it).
+

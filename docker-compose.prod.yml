@@ -1,0 +1,9 @@
+version: '2.1'
+
+services:
+    nginx:
+        volumes:
+            - './data/static_root:/usr/share/nginx/static_root'
+    app:
+        environment:
+            MALVO_PLATFORM: 'prod'
