@@ -8,7 +8,7 @@ venv/
 
 # Bower components
 bower_components/
-lib/
+malvo/static/lib/
 
 # User defined config
 data/conf/secrets.json
@@ -24,3 +24,6 @@ data/logs/data
 
 # Postgres data (docker)
 data/db/data/
+
+# Admin static assets when deployed in development
+malvo/static/admin/

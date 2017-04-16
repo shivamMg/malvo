@@ -8,8 +8,6 @@ from .models import Question
 from teams.forms import UploadFileForm
 from teams.models import TeamCodingAnswer, Team, UploadFileModel
 
-ALLOTTED_HOURS = 1
-
 
 def _get_case_list(question):
     """
@@ -28,11 +26,13 @@ def _get_case_list(question):
         case_list.append({
             'input': {
                 'case_no': inputcase.case_no,
-                'case_text': inputcase.case_text},
+                'case_text': inputcase.case_text
+            },
             'output': {
                 'case_no': inputcase.case_no,
-                'field_name': 'output_field-' + str(inputcase.case_no)}}
-        )
+                'field_name': 'output_field-' + str(inputcase.case_no)
+            }
+        })
 
     return case_list
 
@@ -49,8 +49,7 @@ def _get_question_statuses(team):
 
     for ques in Question.objects.all():
         answer_list = team.teamcodinganswer_set.filter(
-            question_no=ques.question_no
-        )
+            question_no=ques.question_no)
 
         if answer_list.exists():
             empty_count = 0
@@ -72,32 +71,6 @@ def _get_question_statuses(team):
     return status_dict
 
 
-def _is_time_over(team):
-    """
-    Check if time exceeded the allotted limit.
-    """
-    # If `coding_start_time` is not NULL in db
-    if team.coding_start_time is not None:
-        time_diff = timezone.now() - team.coding_start_time
-
-        if time_diff.total_seconds() > ALLOTTED_HOURS * 3600:
-            return True
-
-    return False
-
-
-def _get_remaining_time(team):
-    """
-    Returns remaining time in seconds from allotted time.
-    """
-    # If `coding_start_time` is not NULL in db
-    if team.coding_start_time is not None:
-        time_diff = timezone.now() - team.coding_start_time
-        remaining_time = ALLOTTED_HOURS * 3600 - time_diff.total_seconds()
-
-        return remaining_time
-
-
 @login_required
 def index(request):
     team = get_object_or_404(Team, team_name=request.user)
@@ -105,9 +78,9 @@ def index(request):
     status_dict = _get_question_statuses(team)
 
     return render(request, 'coding/index.html', {
-        'is_time_over': _is_time_over(team),
-        'status_dict': status_dict,}
-    )
+        'is_time_over': team.is_coding_time_over,
+        'status_dict': status_dict,
+    })
 
 
 @login_required
@@ -120,7 +93,7 @@ def challenge(request, question_no):
         team.coding_start_time = timezone.now()
         team.save()
 
-    if _is_time_over(team):
+    if team.is_coding_time_over:
         return HttpResponseRedirect(reverse('coding:index'))
 
     case_list = _get_case_list(question)
@@ -133,8 +106,7 @@ def challenge(request, question_no):
             obj, is_created = UploadFileModel.objects.update_or_create(
                 team=team,
                 question_no=question_no,
-                defaults={'file': request.FILES['file'],}
-            )
+                defaults={'file': request.FILES['file'], })
 
             # Save Output texts
             for case in case_list:
@@ -145,13 +117,12 @@ def challenge(request, question_no):
                     question_no=question.question_no,
                     inputcase_no=case['input']['case_no'],
                     team=team,
-                    defaults={'output_text': output_text,}
-                )
+                    defaults={'output_text': output_text, })
 
             next_question_no = int(question_no) + 1
             if Question.objects.filter(question_no=next_question_no).exists():
-                return HttpResponseRedirect(reverse('coding:challenge',
-                                            args=(next_question_no,)))
+                return HttpResponseRedirect(
+                    reverse('coding:challenge', args=(next_question_no, )))
             else:
                 return HttpResponseRedirect(reverse('coding:index'))
     else:
@@ -161,18 +132,15 @@ def challenge(request, question_no):
     for case in case_list:
         try:
             answer = team.teamcodinganswer_set.get(
-                question_no=question_no,
-                inputcase_no=case['input']['case_no']
-            )
+                question_no=question_no, inputcase_no=case['input']['case_no'])
             case['output']['previous_answer'] = answer.output_text
         except TeamCodingAnswer.DoesNotExist:
             case['output']['previous_answer'] = ''
-
 
     return render(request, 'coding/challenge.html', {
         'question': question,
         'case_list': case_list,
         'status_dict': status_dict,
         'file_form': file_form,
-        'remaining_time': _get_remaining_time(team),}
-    )
+        'remaining_time': team.remaining_coding_time,
+    })

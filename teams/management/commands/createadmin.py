@@ -14,8 +14,12 @@ class Command(BaseCommand):
         team_name = 'admin'
 
         self.stdout.write('Creating admin team `{}`...'.format(team_name))
-        Team.objects.create_superuser(team_name=team_name,
-                                      password=password,
-                                      lang_pref='C')
+        if Team.objects.filter(team_name=team_name).exists():
+            self.stdout.write(
+                self.style.NOTICE('`{}` already exists'.format(team_name)))
+            return
+
+        Team.objects.create_superuser(
+            team_name=team_name, password=password, lang_pref='C')
 
         self.stdout.write(self.style.SUCCESS('DONE'))

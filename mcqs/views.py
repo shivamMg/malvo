@@ -2,9 +2,11 @@ import json
 from collections import OrderedDict
 
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.core.cache import cache
+from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
 
 from .models import Question
 from .dump_mcqs import set_mcqs_in_cache
@@ -48,14 +50,24 @@ def index(request):
     status_dict = _get_question_statuses(team)
     ordered_status_dict = OrderedDict(sorted(status_dict.items()))
 
-    return render(request, 'mcqs/index.html',
-                  {'status_dict': ordered_status_dict})
+    return render(request, 'mcqs/index.html', {
+        'is_time_over': team.is_mcqs_time_over,
+        'status_dict': ordered_status_dict
+    })
 
 
 @login_required
 def questions(request):
     team = Team.objects.get(team_name=request.user)
     set_mcqs_in_cache()
+
+    # Save current time if `mcqs_start_time` is NULL in db
+    if team.mcqs_start_time is None:
+        team.mcqs_start_time = timezone.now()
+        team.save()
+
+    if team.is_mcqs_time_over:
+        return HttpResponseRedirect(reverse('mcqs:index'))
 
     answer_dict = {}
 
@@ -68,6 +80,7 @@ def questions(request):
         cache_key = 'c_mcqs'
 
     return render(request, 'mcqs/questions.html', {
+        'remaining_time': team.remaining_mcqs_time,
         'previous_answers': json.dumps(answer_dict),
         'mcqs': cache.get(cache_key),
     })

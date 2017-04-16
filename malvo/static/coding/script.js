@@ -1,13 +1,14 @@
 $(document).ready(function() {
+  var $timer = $("#timer");
   /* Initialize Showdown MDtoHTML Converter */
   var showdownConverter = new showdown.Converter();
   /* Initialize Timer */
   changeTimer();
   /* Start Timer */
-  timeVar = setInterval(function() {
+  timeObj = setInterval(function() {
     if (RemainingTime <= 0) {
-      clearInterval(timeVar);
-      $("#timer").text("You've run out of time. Submitted answers will not be accepted.");
+      clearInterval(timeObj);
+      $timer.text("You've run out of time. Submitted answers will not be accepted.");
       return;
     }
     changeTimer();
@@ -23,6 +24,6 @@ $(document).ready(function() {
   function changeTimer() {
     var time = new Date(null);
     time.setSeconds(RemainingTime);
-    $("#timer").text(time.toISOString().substr(11, 8));
+    $timer.text(time.toISOString().substr(11, 8));
   }
 });

@@ -19,29 +19,39 @@
   </div>
 </div>
 
-<div class="ui grid" style="min-height: 700px;">
-  <div class="one wide column"></div>
-
-  <div class="eleven wide column">
-    <div class="ui segment" id="question_and_choices_panel">
-      <div id="question_text"></div>
-      <div class="ui divider"></div>
-      <div id="choices"></div>
+<div class="padded-div" style="min-height: 700px;">
+  <div class="ui grid">
+    <div class="twelve wide column">
+      <div class="ui grey segment" id="question-choices-panel">
+        <div id="question-text"></div>
+        <div class="ui divider"></div>
+        <div id="choices"></div>
+      </div>
     </div>
-  </div>
 
-  <div class="three wide column">
-    <div class="ui segment center aligned" id="question_no"></div>
-    <div id="question_no_panel" class="ui segment inverted"></div>
-    <div>
-      <button class="ui left basic attached button" id="prev_question">Previous</button>
-      <button class="ui right basic attached button" id="next_question">Next</button>
+    <div class="four wide column">
+      <div class="ui grey segment">
+        <h3 class="ui red inverted header">
+          <i class="wait icon"></i>
+          <div class="content" id="timer">00:00:00</div>
+        </h3>
+        <h3 class="ui centered header" id="question-no"></h3>
+      </div>
+      <div class="ui segment">
+        <div class="ui two buttons">
+          <button class="ui left attached basic button" id="prev-question">
+            Previous
+          </button>
+          <button class="ui right attached basic button" id="next-question">
+            Next
+          </button>
+        </div>
+      </div>
+      <div class="ui segment inverted" id="question-no-panel"></div>
+      <button class="ui fluid button" id="submit-all">Submit all</button>
     </div>
-    <br>
-    <button class="ui fluid button" id="submit_all">Submit all</button>
   </div>
 </div>
-
 {% endblock %}
 
 {% block scripts %}
@@ -49,6 +59,8 @@
 <script type="text/javascript" src="{% static 'js/highlight.pack.js' %}"></script>
 <script type="text/javascript" src="{% static 'lib/jquery.cookie/jquery.cookie.js' %}"></script>
 <script type="text/javascript">
+  var RemainingTime = {{ remaining_time }};
+
   /* Previous answers
    * `Answers` contains question numbers as keys and answered choices as values.
    * Both keys and values are strings.
@@ -57,6 +69,8 @@
 
   /* MCQs */
   var MCQs = {{ mcqs|safe }};
+  // Sort MCQs according to qno
+  MCQs.sort(function(a, b) { return a.qno - b.qno; });
 
   /* Initialize Showdown MDtoHTML Converter */
   var showdownConverter = new showdown.Converter();

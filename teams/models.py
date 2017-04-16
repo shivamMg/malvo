@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import BaseUserManager
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import RegexValidator
+from django.conf import settings
+from django.utils import timezone
 
 
 class TeamManager(BaseUserManager):
@@ -46,6 +48,7 @@ class Team(AbstractBaseUser):
     team_name = models.SlugField(_('team name'), max_length=25, unique=True)
     lang_pref = models.CharField(_('programming language preference'),
                                  max_length=1, choices=PROG_LANGS, default='0')
+    mcqs_start_time = models.DateTimeField(_('mcqs start time'), null=True)
     coding_start_time = models.DateTimeField(_('coding start time'), null=True)
     is_active = models.BooleanField(_('active'), default=True)
     is_admin = models.BooleanField(_('admin status'), default=False)
@@ -66,8 +69,57 @@ class Team(AbstractBaseUser):
         return self.team_name
 
     def get_lang_pref_name(self):
-        lang = [lang[1] for lang in self.PROG_LANGS if lang[0] == self.lang_pref]
+        lang = [lang[1] for lang in self.PROG_LANGS
+                if lang[0] == self.lang_pref]
         return lang[0]
+
+    @property
+    def remaining_mcqs_time(self):
+        """
+        Returns remaining time in seconds from allotted time.
+        """
+        # If `mcqs_start_time` is not NULL in db
+        if self.mcqs_start_time is not None:
+            time_diff = timezone.now() - self.mcqs_start_time
+            remaining_time = settings.MCQS_DURATION * 60 - \
+                time_diff.total_seconds()
+
+            return remaining_time
+
+    @property
+    def is_mcqs_time_over(self):
+        """
+        Check if time exceeded the allotted limit.
+        """
+        remaining_time = self.remaining_mcqs_time
+        if remaining_time is not None:
+            if remaining_time <= 0:
+                return True
+        return False
+
+    @property
+    def remaining_coding_time(self):
+        """
+        Returns remaining time in seconds from allotted time.
+        """
+        # If `coding_start_time` is not NULL in db
+        if self.coding_start_time is not None:
+            time_diff = timezone.now() - self.coding_start_time
+            remaining_time = settings.CODING_DURATION * 60 - \
+                time_diff.total_seconds()
+
+            return remaining_time
+
+    @property
+    def is_coding_time_over(self):
+        """
+        Check if time exceeded the allotted limit.
+        """
+        remaining_time = self.remaining_coding_time
+        if remaining_time is not None:
+            if remaining_time <= 0:
+                return True
+        return False
 
     def get_absolute_url(self):
         return "/teams/{0}".format(self.team_name)

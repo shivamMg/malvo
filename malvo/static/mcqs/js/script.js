@@ -1,40 +1,53 @@
-
-var McqObj = {
-  questions: [],
-  /* `len` would be the total number of questions */
-  len: 0,
-  /* `curQuesIndex` is the index of current question */
-  curQuesIndex: -1,
-  switchNextQues: '',
-  switchPrevQues: ''
-};
-
 $(document).ready(function() {
-    /* CSRF Token */
-    var csrfmiddlewaretoken = $.cookie("csrftoken");
+  var $timer = $("#timer");
+  var $qnoPanel = $("#question-no-panel");
+  var $qchPanel = $("#question-choices-panel");
+  var $questionNo = $("#question-no");
+  var $questionText = $("#question-text");
+  var $choices = $("#choices");
 
-    // Sort MCQs according to qno
-    MCQs.sort(function(a, b) { return a.qno - b.qno; });
+  $qchPanel.hide();
 
-    McqObj.questions = MCQs;
-    McqObj.len = MCQs.length;
-    McqObj.curQuesIndex = -1;
-
-    switchQuestion(0);
-
-    var panel = $("#question_no_panel");
-    /* Create panel buttons */
-    var panelButtons = "";
-    for (i = 0; i < McqObj.len; i++) {
-      if (Answers[String(i+1)] === "" || typeof Answers[String(i+1)] === "undefined") {
-        panelButton = '<span class="qno-panel-label" id="qno' + String(i+1) + '">' + String(i+1) + '</span>';
-      } else {
-        panelButton = '<span class="qno-panel-label answered" id="qno' + String(i+1) + '">' + String(i+1) + '</span>';
-      }
-      panelButtons += panelButton;
+  /* Start Timer */
+  var timerObj = setInterval(function() {
+    if (RemainingTime <= 0) {
+      clearInterval(timerObj);
+      $timer.text("You've run out of time. Submitted answers will not be accepted.");
+      return;
     }
-    /* Add buttons to panel */
-    panel.html(panelButtons);
+    changeTimer();
+    RemainingTime -= 1;
+  }, 1000);
+
+  var mcqObj = {
+    questions: MCQs,
+    /* `curQuesIndex` is the index of current question */
+    curQuesIndex: -1,
+    switchNextQues: function() {
+      var i = mcqObj.curQuesIndex;
+      i = (i == mcqObj.questions.length-1) ? 0 : ++i;
+      switchQuestion(i);
+    },
+    switchPrevQues: function() {
+      var i = mcqObj.curQuesIndex;
+      i = (i === 0) ? mcqObj.questions.length-1 : --i;
+      switchQuestion(i);
+    }
+  };
+
+  /* Add Question Panel Buttons */
+  var panelButtons = "";
+  for (var i = 0; i < mcqObj.questions.length; i++) {
+    if (Answers[String(i+1)] === "" || typeof Answers[String(i+1)] === "undefined") {
+      panelButton = '<span class="qno-panel-label" id="qno' + String(i+1) + '">' + String(i+1) + '</span>';
+    } else {
+      panelButton = '<span class="qno-panel-label answered" id="qno' + String(i+1) + '">' + String(i+1) + '</span>';
+    }
+    panelButtons += panelButton;
+  }
+  $qnoPanel.html(panelButtons);
+
+  switchQuestion(0);
 
   $(document).on("click", ".qno-panel-label", function() {
     var $this = $(this);
@@ -43,93 +56,80 @@ $(document).ready(function() {
     switchQuestion(index);
   });
 
-  $("#next_question").click(function() {
-    McqObj.switchNextQues();
+  $("#next-question").click(function() {
+    mcqObj.switchNextQues();
   });
 
-  $("#prev_question").click(function() {
-    McqObj.switchPrevQues();
+  $("#prev-question").click(function() {
+    mcqObj.switchPrevQues();
   });
-
-  McqObj.switchNextQues = function() {
-    var i = McqObj.curQuesIndex;
-    i = (i == McqObj.len-1) ? 0 : ++i;
-    switchQuestion(i);
-  };
-
-  McqObj.switchPrevQues = function() {
-    var i = McqObj.curQuesIndex;
-    i = (i === 0) ? McqObj.len-1 : --i;
-    switchQuestion(i);
-  };
 
   function switchQuestion(index) {
-    if (index == McqObj.curQuesIndex) {
+    if (index == mcqObj.curQuesIndex) {
       return;
     }
 
     var choices = "";
-    var question = McqObj.questions[index];
+    var question = mcqObj.questions[index];
 
-    $("#question_and_choices_panel").fadeOut(300, function() {
-      $("#question_no").text("Q" + String(question.qno));
+    $qchPanel.fadeOut(300, function() {
+      $questionNo.text("Q " + String(question.qno));
       /* Convert Markdown text to HTML */
       var qtextHtml = showdownConverter.makeHtml(question.qtext);
 
-      $("#question_text").html(qtextHtml);
-
-      /* Highlightjs */
-      $("pre code").each(function(i, block) {
-        hljs.highlightBlock(block);
-      });
+      $questionText.html(qtextHtml);
 
       $.each(question.choices, function(i, choice) {
         /* Highlight the choice if it has already been selected as answer */
-        var choiceid = "choiceno" + String(choice.no);
+        var choiceId = "choiceno" + String(choice.no);
+        var choiceText = showdownConverter.makeHtml(choice.text);
         if (choice.no == Answers[String(question.qno)] && typeof Answers[String(question.qno)] != "undefined") {
-          div = '<div class="ui segment inverted teal choice" onclick="selectChoice(this)" id="' + choiceid + '">' + choice.text + '</div>';
+          var div = '<div class="ui segment choice answered" onclick="selectChoice(this)" id="' + choiceId + '">' + choiceText + '</div>';
         } else {
-          div = '<div class="ui segment choice" onclick="selectChoice(this)" id="' + choiceid + '">' + choice.text + '</div>';
+          var div = '<div class="ui segment choice" onclick="selectChoice(this)" id="' + choiceId + '">' + choiceText + '</div>';
         }
 
         choices +=  div;
       });
-      $("#choices").html(choices);
-    }).fadeIn(300);
+      $choices.html(choices);
 
-    McqObj.curQuesIndex = index;
+      /* Apply Highlightjs */
+      $("pre code").each(function(i, block) {
+        hljs.highlightBlock(block);
+      });
+    }).fadeIn(100);
 
+    $("#qno" + String(mcqObj.curQuesIndex + 1)).removeClass("current");
+    mcqObj.curQuesIndex = index;
+    $("#qno" + String(mcqObj.curQuesIndex + 1)).addClass("current");
   }
 
   window.selectChoice = function selectChoice(ele) {
     var selectedChoiceId = $(ele).attr("id");
-    var choiceno = parseInt(selectedChoiceId.slice("choiceno".length));
-    var curQuesNo = String(McqObj.curQuesIndex+1);
-    Answers[curQuesNo] = choiceno;
-    $(ele).addClass("teal inverted");
+    var choiceNo = parseInt(selectedChoiceId.slice("choiceno".length));
+    var curQuesNo = String(mcqObj.curQuesIndex+1);
+    Answers[curQuesNo] = choiceNo;
+    $(ele).addClass("answered");
 
-    /* Mark Question as answered in question_no_panel */
+    /* Mark Question as answered in question-no-panel */
     $("#qno" + curQuesNo).addClass("answered");
 
     /* Switch to next question */
-    McqObj.switchNextQues();
+    mcqObj.switchNextQues();
   };
 
-  $("#submit_all").click(function() {
-
+  $("#submit-all").click(function() {
     /* If all questions have not been solved */
-    if (Object.keys(Answers).length != McqObj.len) {
-      // var submitAnswers = confirm("You have not answered all questions. Would you still like to continue uploading answers?");
+    if (Object.keys(Answers).length != mcqObj.questions.length) {
+      var submitAnswers = confirm("You have not answered all questions. Would you still like to continue uploading answers?");
       /* If user cancels confirmation, don't upload answers */
-      // if (submitAnswers === false) {
-      //   return;
-      // }
-      alert("Please answer all questions.");
-      return;
+      if (submitAnswers === false) {
+        return;
+      }
     }
 
     var data = $.extend({}, Answers);
-    data.csrfmiddlewaretoken = csrfmiddlewaretoken;
+    data.csrfmiddlewaretoken = $.cookie("csrftoken");
     $.post("/mcqs/answer/", data, function() {
       console.log("Answers uploaded.");
       $(".ui.basic.small.modal").modal("show");
@@ -140,4 +140,9 @@ $(document).ready(function() {
     });
   });
 
+  function changeTimer() {
+    var time = new Date(null);
+    time.setSeconds(RemainingTime);
+    $timer.text(time.toISOString().substr(11, 8));
+  }
 });

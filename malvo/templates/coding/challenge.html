@@ -16,8 +16,7 @@
   <div class="ui grid">
     <div class="twelve wide column">
       <!-- Challenge Question -->
-      <div class="ui segment">
-        <h3><u>Challenge {{ question.question_no }}</u></h3>
+      <div class="ui grey segment">
         <div id="question_text" class="markdown">{{ question.question_text }}</div>
       </div>
 
@@ -73,8 +72,14 @@
 
     <div class="four wide column">
       <!-- Timer -->
-      <div class="ui center aligned segment">
-        <h2 class="ui red inverted header" id="timer"></h2>
+      <div class="ui center aligned grey segment">
+        <h3 class="ui red inverted header">
+          <i class="wait icon"></i>
+          <div class="content" id="timer">00:00:00</div>
+        </h3>
+        <h3 class="ui centered header" style="margin-top: 0;">
+          <u>Challenge {{ question.question_no }}</u>
+        </h3>
       </div>
 
       <!-- Status Panel -->

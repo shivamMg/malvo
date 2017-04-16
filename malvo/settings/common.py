@@ -124,29 +124,26 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
-
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'malvo', 'static'),
 ]
 
-
 # Media
 MEDIA_URL = '/media/'
 
-
 # Login Redirect URL
-
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/team/login/'
 
 
 # Auth user model
-
 AUTH_USER_MODEL = 'teams.Team'
 
-
 # Media and Static Roots
-
 MEDIA_ROOT = os.path.join(DATA_DIR, 'media_root')
 STATIC_ROOT = os.path.join(DATA_DIR, 'static_root')
+
+# Allotted Time for MCQs and Coding (minutes)
+MCQS_DURATION = SECRETS.get('mcqs_duration', 60)
+CODING_DURATION = SECRETS.get('coding_duration', 60 * 3)
