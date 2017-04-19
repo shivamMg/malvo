@@ -19,8 +19,8 @@
     "tests"
   ],
   "dependencies": {
-    "jquery": "~2.2.0",
-    "semantic": "semantic-ui#~2.1.8",
+    "jquery": "^3.2.1",
+    "semantic": "semantic-ui#^2.2.10",
     "showdown": "~1.3.0",
     "jquery.cookie": "jquery-cookie#~1.4.1",
     "animate.css": "^3.5.2"

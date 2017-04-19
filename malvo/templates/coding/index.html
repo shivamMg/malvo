@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
 
 {% block content %}
 
@@ -26,21 +27,49 @@
     </div>
 
     <div class="column">
+      <div class="ui inverted segment">
+        <h3 class="ui red header">
+          <i class="wait icon"></i>
+          <div class="content" id="timer">00:00:00</div>
+        </h3>
+      </div>
       <div class="ui segment">
         <h2 class="ui grey header">Instructions</h2>
-        <ul class="ui list">
-          <li>Some instruction 1</li>
-          <li>Some instruction 2</li>
+        <ul class="ui bulleted list">
+          <div class="item">
+            <h4 class="ui grey header">Challenges can be completed in any order.</h4>
+          </div>
+          <div class="item">
+            <h4 class="ui grey header">A Challenge can be
+              <div class="ui green horizontal label">Solved</div>,
+              <div class="ui olive horizontal label">Partially Solved</div> or
+              <div class="ui grey horizontal label">Unattempted</div>, depending on the number of
+            input cases solved.</h4>
+          </div>
+          <div class="item">
+            <h4 class="ui grey header">Your timer will begin as soon as you enter the arena.</h4>
+          </div>
+          <div class="item">
+            <h4 class="ui grey header">All challenges must be solved in the allotted time.</h4>
+          </div>
+          <div class="item">
+            <h4 class="ui grey header">Your code must be uploaded for each challenge.</h4>
+          </div>
         </ul>
       </div>
-    {% if is_time_over %}
-      <div class="ui inverted segment">
-        <h2 class="ui red header center aligned">You've run out of time.</h2>
-      </div>
-    {% else %}
-      <a class="ui primary button huge" href="{% url 'coding:challenge' question_no=1 %}">Enter Arena</a>
-    {% endif %}
+      <a class="ui black button huge" href="{% url 'coding:challenge' question_no=1 %}">
+        <i class="terminal icon"></i>
+        Enter Arena
+      </a>
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+  var RemainingTime = {{ remaining_time }};
+  var LockTimer = {{ has_started|yesno:"false,true" }};
+</script>
+<script type="text/javascript" src="{% static 'js/timer.js' %}"></script>
 {% endblock %}

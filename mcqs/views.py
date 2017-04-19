@@ -51,7 +51,8 @@ def index(request):
     ordered_status_dict = OrderedDict(sorted(status_dict.items()))
 
     return render(request, 'mcqs/index.html', {
-        'is_time_over': team.is_mcqs_time_over,
+        'remaining_time': team.remaining_mcqs_time,
+        'has_started': bool(team.mcqs_start_time is not None),
         'status_dict': ordered_status_dict
     })
 
@@ -88,6 +89,8 @@ def questions(request):
 
 @login_required
 def answer(request):
+    # Check for Time over has intentionally been ignored
+
     if request.method == 'POST':
         team, question_list = _team_and_question_list(request.user)
 
@@ -100,5 +103,4 @@ def answer(request):
                     team=team,
                     defaults={'choice_no': choice_no})
 
-    # return HttpResponse(reverse('mcqs:index'))
     return HttpResponse({'status': 'ok'})

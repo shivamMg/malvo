@@ -38,13 +38,14 @@ pre code {
   width: 29px;
   height: 29px;
   padding-top: 5px;
-  margin: 2px;
+  margin: 1px;
   border-radius: 2px;
   background-color: #eaeaea;
   color: #263238;
   font-size: 18px;
   text-align: center;
   cursor: pointer;
+  border: 1px solid #1b1c1d;
 }
 
 .qno-panel-label.answered {
@@ -64,4 +65,5 @@ pre code {
 .qno-panel-label.current {
   background-color: #1b1c1d;
   color: #eaeaea;
+  border: 1px solid #eaeaea;
 }

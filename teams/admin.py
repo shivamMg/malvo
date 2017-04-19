@@ -7,8 +7,7 @@ from .forms import (
     TeamChangeForm,
     TeamCreationForm,
     TeamMemberChangeForm,
-    TeamMemberCreationForm,
-)
+    TeamMemberCreationForm, )
 
 
 class TeamAdmin(BaseUserAdmin):
@@ -16,21 +15,23 @@ class TeamAdmin(BaseUserAdmin):
     add_form = TeamCreationForm
 
     list_display = ('team_name', 'is_admin')
-    list_filter = ('is_admin',)
+    list_filter = ('is_admin', )
     fieldsets = (
-        (None, {'fields': ('team_name', 'lang_pref', 'password', 'coding_start_time')}),
-        ('Permissions', {'fields': ('is_admin',)}),
-    )
-
-    add_fieldsets = (
         (None, {
-            'classes': ('wide',),
-            'fields': ('team_name', 'lang_pref', 'coding_start_time',
-                'password1', 'password2')}
-        ),
-    )
-    search_fields = ('team_name',)
-    ordering = ('team_name',)
+            'fields': ('team_name', 'lang_pref', 'password', 'mcqs_start_time',
+                       'coding_start_time')
+        }),
+        ('Permissions', {
+            'fields': ('is_admin', )
+        }), )
+
+    add_fieldsets = ((None, {
+        'classes': ('wide', ),
+        'fields': ('team_name', 'lang_pref', 'mcqs_start_time',
+                   'coding_start_time', 'password1', 'password2')
+    }), )
+    search_fields = ('team_name', )
+    ordering = ('team_name', )
     filter_horizontal = ()
 
 
@@ -40,18 +41,16 @@ class TeamMemberAdmin(BaseUserAdmin):
 
     list_display = ('full_name', 'college_id', 'mobile_no', 'email', 'team')
     list_filter = ()
-    fieldsets = (
-        (None, {'fields': ('full_name', 'college_id', 'mobile_no', 'email', 'team')}),
-    )
+    fieldsets = ((None, {
+        'fields': ('full_name', 'college_id', 'mobile_no', 'email', 'team')
+    }), )
 
-    add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('full_name', 'college_id', 'mobile_no', 'email', 'team')}
-        ),
-    )
-    search_fields = ('full_name',)
-    ordering = ('full_name',)
+    add_fieldsets = ((None, {
+        'classes': ('wide', ),
+        'fields': ('full_name', 'college_id', 'mobile_no', 'email', 'team')
+    }), )
+    search_fields = ('full_name', )
+    ordering = ('full_name', )
     filter_horizontal = ()
 
 

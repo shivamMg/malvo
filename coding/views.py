@@ -78,7 +78,8 @@ def index(request):
     status_dict = _get_question_statuses(team)
 
     return render(request, 'coding/index.html', {
-        'is_time_over': team.is_coding_time_over,
+        'remaining_time': team.remaining_coding_time,
+        'has_started': bool(team.coding_start_time is not None),
         'status_dict': status_dict,
     })
 

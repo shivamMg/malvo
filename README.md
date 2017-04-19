@@ -55,7 +55,9 @@ bower install
   "allowed_hosts": [
     "127.0.0.1",
     "localhost"
-  ]
+  ],
+  "mcqs_duration": 60,
+  "coding_duration": 180
 }
 ```
 

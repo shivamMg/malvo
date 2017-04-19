@@ -1,23 +1,35 @@
 $(document).ready(function() {
-  var $timer = $("#timer");
   var $qnoPanel = $("#question-no-panel");
   var $qchPanel = $("#question-choices-panel");
   var $questionNo = $("#question-no");
   var $questionText = $("#question-text");
   var $choices = $("#choices");
 
-  $qchPanel.hide();
-
-  /* Start Timer */
-  var timerObj = setInterval(function() {
-    if (RemainingTime <= 0) {
-      clearInterval(timerObj);
-      $timer.text("You've run out of time. Submitted answers will not be accepted.");
-      return;
+  // Check for unuploaded Answers
+  var localAnswers = JSON.parse(localStorage.getItem("mcqs"));
+  if (localAnswers === null) {
+    localStorage.setItem("mcqs", JSON.stringify(Answers));
+  } else {
+    // Check if localAnswers equals uploaded Answers
+    var equal = true;
+    // Using keys for localAnswers (it will always be >= Answers)
+    var keys = Object.keys(localAnswers);
+    for (var i = 0; i < keys.length; i++) {
+      if (localAnswers[keys[i]] != Answers[keys[i]]) {
+        equal = false;
+        break;
+      }
     }
-    changeTimer();
-    RemainingTime -= 1;
-  }, 1000);
+    if (!equal) {
+      $(".load-answers.modal")
+        .modal({
+          closable: false,
+          onApprove: loadFromStorage,
+          onDeny: loadFromAnswers,
+        })
+        .modal("show");
+    }
+  }
 
   var mcqObj = {
     questions: MCQs,
@@ -35,18 +47,8 @@ $(document).ready(function() {
     }
   };
 
-  /* Add Question Panel Buttons */
-  var panelButtons = "";
-  for (var i = 0; i < mcqObj.questions.length; i++) {
-    if (Answers[String(i+1)] === "" || typeof Answers[String(i+1)] === "undefined") {
-      panelButton = '<span class="qno-panel-label" id="qno' + String(i+1) + '">' + String(i+1) + '</span>';
-    } else {
-      panelButton = '<span class="qno-panel-label answered" id="qno' + String(i+1) + '">' + String(i+1) + '</span>';
-    }
-    panelButtons += panelButton;
-  }
-  $qnoPanel.html(panelButtons);
-
+  addQuestionPanelLabels();
+  // Load first question
   switchQuestion(0);
 
   $(document).on("click", ".qno-panel-label", function() {
@@ -74,7 +76,6 @@ $(document).ready(function() {
 
     $qchPanel.fadeOut(300, function() {
       $questionNo.text("Q " + String(question.qno));
-      /* Convert Markdown text to HTML */
       var qtextHtml = showdownConverter.makeHtml(question.qtext);
 
       $questionText.html(qtextHtml);
@@ -104,45 +105,67 @@ $(document).ready(function() {
     $("#qno" + String(mcqObj.curQuesIndex + 1)).addClass("current");
   }
 
+  function addQuestionPanelLabels() {
+    var panelButtons = "";
+    for (var i = 0; i < mcqObj.questions.length; i++) {
+      if (Answers[String(i+1)] === "" || typeof Answers[String(i+1)] === "undefined") {
+        panelButton = '<span class="qno-panel-label" id="qno' + String(i+1) + '">' + String(i+1) + '</span>';
+      } else {
+        panelButton = '<span class="qno-panel-label answered" id="qno' + String(i+1) + '">' + String(i+1) + '</span>';
+      }
+      panelButtons += panelButton;
+    }
+    $qnoPanel.html(panelButtons);
+  }
+
+  function loadFromStorage() {
+    var keys = Object.keys(localAnswers);
+    for (var i = 0; i < keys.length; i++) {
+      Answers[keys[i]] = localAnswers[keys[i]];
+    }
+    addQuestionPanelLabels();
+  }
+
+  function loadFromAnswers() {
+    localStorage.setItem("mcqs", JSON.stringify(Answers));
+  }
+
+  function submitAnswers() {
+    var data = $.extend({}, Answers);
+    data.csrfmiddlewaretoken = $.cookie("csrftoken");
+    $.post("/mcqs/answer/", data, function() {
+      localStorage.removeItem("mcqs");
+      $(".success-submit.modal").modal("show");
+    }).fail(function() {
+      alert("Error occured while uploading answers. Please try again.");
+    });
+  }
+
   window.selectChoice = function selectChoice(ele) {
     var selectedChoiceId = $(ele).attr("id");
     var choiceNo = parseInt(selectedChoiceId.slice("choiceno".length));
-    var curQuesNo = String(mcqObj.curQuesIndex+1);
+    var curQuesNo = String(mcqObj.curQuesIndex + 1);
     Answers[curQuesNo] = choiceNo;
-    $(ele).addClass("answered");
+    // Update local answers
+    localStorage.setItem("mcqs", JSON.stringify(Answers));
 
-    /* Mark Question as answered in question-no-panel */
+    $(".choice").removeClass("answered");
+    $(ele).addClass("answered");
     $("#qno" + curQuesNo).addClass("answered");
 
-    /* Switch to next question */
     mcqObj.switchNextQues();
   };
 
   $("#submit-all").click(function() {
-    /* If all questions have not been solved */
+    // If all questions have not been solved
     if (Object.keys(Answers).length != mcqObj.questions.length) {
-      var submitAnswers = confirm("You have not answered all questions. Would you still like to continue uploading answers?");
-      /* If user cancels confirmation, don't upload answers */
-      if (submitAnswers === false) {
-        return;
-      }
+      $(".confirm-submit.modal")
+        .modal({
+          onApprove: submitAnswers
+        })
+        .modal("show");
+      return;
     }
-
-    var data = $.extend({}, Answers);
-    data.csrfmiddlewaretoken = $.cookie("csrftoken");
-    $.post("/mcqs/answer/", data, function() {
-      console.log("Answers uploaded.");
-      $(".ui.basic.small.modal").modal("show");
-      // alert("Answers uploaded.");
-    }).fail(function() {
-      console.log("Error occured while uploading answers.");
-      alert("Error occured while uploading answers.");
-    });
+    submitAnswers();
   });
-
-  function changeTimer() {
-    var time = new Date(null);
-    time.setSeconds(RemainingTime);
-    $timer.text(time.toISOString().substr(11, 8));
-  }
 });

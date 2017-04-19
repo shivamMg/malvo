@@ -1,11 +1,35 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block stylesheets %}
+<style type="text/css">
+  .mcq-statuses > .ui.column {
+    padding-left: 12px;
+    padding-right: 4px;
+    border-bottom: 1px solid #dcdcdc;
+  }
+</style>
+{% endblock %}
 
 {% block content %}
 
 <div class="ui container">
-  <div class="ui two column stackable grid">
+  <div class="ui two column grid">
     <div class="column">
       <div class="ui segment">
+        <div class="ui three column stackable grid mcq-statuses">
+        {% for question_no, status in status_dict.items %}
+          <div class="ui column">
+            MCQ {{ question_no }}
+            {% if status == 'S' %}
+              <div class="ui green horizontal label" style="float: right;">Solved</div>
+            {% elif status == 'U' %}
+              <div class="ui grey horizontal label" style="float: right;">Unattempted</div>
+            {% endif %}
+          </div>
+        {% endfor %}
+        </div>
+      {% comment %}
       {% if status_dict %}
         <div class="ui divided selection list">
         {% for question_no, status in status_dict.items %}
@@ -22,19 +46,50 @@
       {% else %}
         <h2>No information to display.</h2>
       {% endif %}
+      {% endcomment %}
       </div>
     </div>
 
     <div class="aligned column">
+      <div class="ui inverted segment">
+        <h3 class="ui red header">
+          <i class="wait icon"></i>
+          <div class="content" id="timer">00:00:00</div>
+        </h3>
+      </div>
       <div class="ui segment">
         <h2 class="ui grey header">Instructions</h2>
-        <ul class="ui list">
-          <li><strong>Do not close the Arena until answers have been submitted.</strong></li>
-          <li>Answers are uploaded all at once.</li>
+        <ul class="ui bulleted list">
+          <div class="item">
+            <h4 class="ui grey header">An MCQ can be
+              <div class="ui green horizontal label">Solved</div> or
+              <div class="ui grey horizontal label">Unattempted</div>.
+            </h4>
+          </div>
+          <div class="item">
+            <h4 class="ui grey header">Your timer will begin as soon as you enter the arena.</h4>
+          </div>
+          <div class="item">
+            <h4 class="ui grey header">All MCQs must be solved in the allotted time.</h4>
+          </div>
+          <div class="item">
+            <h4 class="ui grey header">Questions do not carry negative markings.</h4>
+          </div>
         </ul>
       </div>
-      <a class="ui primary button huge" href="{% url 'mcqs:questions' %}">Enter Arena</a>
+      <a class="ui black button huge" href="{% url 'mcqs:questions' %}">
+        <i class="terminal icon"></i>
+        Enter Arena
+      </a>
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+  var RemainingTime = {{ remaining_time }};
+  var LockTimer = {{ has_started|yesno:"false,true" }};
+</script>
+<script type="text/javascript" src="{% static 'js/timer.js' %}"></script>
 {% endblock %}

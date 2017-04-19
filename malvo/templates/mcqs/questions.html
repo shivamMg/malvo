@@ -8,12 +8,49 @@
 
 {% block content %}
 
-<div class="ui basic small modal">
-  <div class="ui header">
+<div class="ui small modal load-answers">
+  <div class="header">
+    You've un-uploaded answers saved in browser storage.
+  </div>
+  <div class="content">
+    <p>Click Load Answers to load them into your current state. Or click Remove to delete them.</p>
+  </div>
+  <div class="actions">
+    <button class="ui primary ok button">
+      <i class="checkmark icon"></i>
+      Load Answers
+    </button>
+    <button class="ui cancel button">
+      <i class="remove icon"></i>
+      Remove
+    </button>
+  </div>
+</div>
+
+<div class="ui small modal confirm-submit">
+  <div class="header">
+    You have not answered all questions.
+  </div>
+  <div class="content">
+    Kindly solve all questions before submitting. Click on Continue submitting to submit anyways.
+    Else click on Cancel.
+  </div>
+  <div class="actions">
+    <button class="ui primary ok button">
+      Continue submitting
+    </button>
+    <button class="ui cancel button">
+      Cancel
+    </button>
+  </div>
+</div>
+
+<div class="ui small modal success-submit">
+  <div class="header">
     Answers submitted successfully.
   </div>
   <div class="actions">
-    <a class="ui green ok inverted button" href="{% url 'mcqs:index' %}">
+    <a class="ui primary button" href="{% url 'mcqs:index' %}">
       Exit Arena
     </a>
   </div>
@@ -22,7 +59,7 @@
 <div class="padded-div" style="min-height: 700px;">
   <div class="ui grid">
     <div class="twelve wide column">
-      <div class="ui grey segment" id="question-choices-panel">
+      <div class="ui grey segment" id="question-choices-panel" style="display: none;">
         <div id="question-text"></div>
         <div class="ui divider"></div>
         <div id="choices"></div>
@@ -30,8 +67,8 @@
     </div>
 
     <div class="four wide column">
-      <div class="ui grey segment">
-        <h3 class="ui red inverted header">
+      <div class="ui inverted black segment">
+        <h3 class="ui red header">
           <i class="wait icon"></i>
           <div class="content" id="timer">00:00:00</div>
         </h3>
@@ -48,7 +85,10 @@
         </div>
       </div>
       <div class="ui segment inverted" id="question-no-panel"></div>
-      <button class="ui fluid button" id="submit-all">Submit all</button>
+      <button class="ui fluid primary button" id="submit-all" data-inverted=""
+        data-tooltip="Answers will be uploaded all at once" data-position="bottom left">
+        Submit all answers
+      </button>
     </div>
   </div>
 </div>
@@ -63,7 +103,6 @@
 
   /* Previous answers
    * `Answers` contains question numbers as keys and answered choices as values.
-   * Both keys and values are strings.
    */
   var Answers = {{ previous_answers|safe }};
 
@@ -76,4 +115,5 @@
   var showdownConverter = new showdown.Converter();
 </script>
 <script type="text/javascript" src="{% static 'mcqs/js/script.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/timer.js' %}"></script>
 {% endblock %}

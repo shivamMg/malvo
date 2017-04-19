@@ -27,7 +27,7 @@
 
   {% for form in team_member_formset %}
     <h5>Member {{ forloop.counter }}</h5>
-    
+
     {% for field in form %}
       {% if field.errors %}
         <div class="field error">
@@ -45,7 +45,7 @@
   {% endfor %}
 
     <div class="field">
-      <button class="ui submit button" type="submit">Register</button>
+      <button class="ui submit primary button" type="submit">Register</button>
     </div>
   </div>
 

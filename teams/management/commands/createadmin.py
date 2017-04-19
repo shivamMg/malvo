@@ -13,7 +13,8 @@ class Command(BaseCommand):
         password = options['password'][0]
         team_name = 'admin'
 
-        self.stdout.write('Creating admin team `{}`...'.format(team_name))
+        self.stdout.write(
+            'Creating admin team `{}`...'.format(team_name), ending='')
         if Team.objects.filter(team_name=team_name).exists():
             self.stdout.write(
                 self.style.NOTICE('`{}` already exists'.format(team_name)))

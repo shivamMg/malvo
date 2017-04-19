@@ -86,16 +86,15 @@ class Team(AbstractBaseUser):
 
             return remaining_time
 
+        return settings.MCQS_DURATION * 60
+
     @property
     def is_mcqs_time_over(self):
         """
         Check if time exceeded the allotted limit.
         """
         remaining_time = self.remaining_mcqs_time
-        if remaining_time is not None:
-            if remaining_time <= 0:
-                return True
-        return False
+        return bool(remaining_time <= 0)
 
     @property
     def remaining_coding_time(self):
@@ -110,16 +109,15 @@ class Team(AbstractBaseUser):
 
             return remaining_time
 
+        return settings.CODING_DURATION * 60
+
     @property
     def is_coding_time_over(self):
         """
         Check if time exceeded the allotted limit.
         """
         remaining_time = self.remaining_coding_time
-        if remaining_time is not None:
-            if remaining_time <= 0:
-                return True
-        return False
+        return bool(remaining_time <= 0)
 
     def get_absolute_url(self):
         return "/teams/{0}".format(self.team_name)

@@ -56,7 +56,7 @@
                         {{ field.errors.as_text }}
                       </div>
                     {% endif %}
-                    <div class="ui right pointing red basic label">
+                    <div class="ui right pointing red label">
                       REQUIRED
                     </div>
                     {{ field.label_tag }}
@@ -72,13 +72,13 @@
 
     <div class="four wide column">
       <!-- Timer -->
-      <div class="ui center aligned grey segment">
-        <h3 class="ui red inverted header">
+      <div class="ui inverted segment">
+        <h3 class="ui red header">
           <i class="wait icon"></i>
           <div class="content" id="timer">00:00:00</div>
         </h3>
         <h3 class="ui centered header" style="margin-top: 0;">
-          <u>Challenge {{ question.question_no }}</u>
+          Challenge {{ question.question_no }}
         </h3>
       </div>
 
@@ -114,4 +114,5 @@
   var RemainingTime = {{ remaining_time }};
 </script>
 <script type="text/javascript" src="{% static 'coding/script.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/timer.js' %}"></script>
 {% endblock %}
