@@ -18,6 +18,12 @@ Programming Contest Platform
 
 ## Installation
 
+Get yourself a local copy of the repo.
+
+```bash
+git clone https://github.com/shivamMg/malvo
+cd malvo
+```
 
 ### Docker
 
@@ -30,7 +36,7 @@ Docker can be used for both development and production. You're going to need [Do
   "secret_key": "some-secret-key",
   "db_name": "malvo",
   "db_user": "malvo",
-  "db_host": "localhost",
+  "db_host": "db",
   "db_password": "your-psql-user-password",
   "allowed_hosts": [
     "127.0.0.1",
@@ -104,7 +110,7 @@ pip install -r requirements.txt
 bower install
 ```
 
-4. Add a `secrets.json` file inside `data/conf`. Edit it as explained in Docker installation above.
+4. Add a `secrets.json` file inside `data/conf`. Edit it as explained in Docker installation above, and make sure to change `db_host` to `localhost` from `db`.
 
 5. Migrate and create a superuser.
 

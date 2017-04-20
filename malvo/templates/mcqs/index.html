@@ -17,6 +17,7 @@
   <div class="ui two column grid">
     <div class="column">
       <div class="ui segment">
+      {% if status_dict %}
         <div class="ui three column stackable grid mcq-statuses">
         {% for question_no, status in status_dict.items %}
           <div class="ui column">
@@ -29,24 +30,9 @@
           </div>
         {% endfor %}
         </div>
-      {% comment %}
-      {% if status_dict %}
-        <div class="ui divided selection list">
-        {% for question_no, status in status_dict.items %}
-          <a class="item">
-            MCQ {{ question_no }}
-            {% if status == 'S' %}
-              <div class="ui green horizontal label right floated">Solved</div>
-            {% elif status == 'U' %}
-              <div class="ui grey horizontal label right floated">Unattempted</div>
-            {% endif %}
-          </a>
-        {% endfor %}
-        </div>
       {% else %}
-        <h2>No information to display.</h2>
+        <h2>MCQs haven't been added yet.</h2>
       {% endif %}
-      {% endcomment %}
       </div>
     </div>
 
