@@ -1,5 +1,4 @@
-![malvo](https://github.com/shivammg/malvo/raw/master/malvo/static/images/malvo.png "malvo")
-
+<img src="https://github.com/shivammg/malvo/raw/master/malvo/static/images/malvo.png" alt="malvo" width="256" height="110" />
 
 Programming Contest Platform
 
