@@ -1,17 +1,79 @@
-# Malvo
+![malvo](https://github.com/shivammg/malvo/raw/master/malvo/static/images/malvo.png "malvo")
+
 
 Programming Contest Platform
 
-## Screenshots
 
-- [Screenshot 1](http://imgur.com/44tQMSU)
-- [Screenshot 2](http://imgur.com/LvuHf7P)
-- [Screenshot 3](http://imgur.com/qdliVUK)
-- [Screenshot 4](http://imgur.com/pqQVzzc)
-- [Screenshot 5](http://imgur.com/F0t6Ni6)
+## Table of contents
+
+ * [Table of contents](#table-of-contents)
+ * [Installation](#installation)
+   * [Docker](#docker)
+   * [Simple Installation](#simple-installation)
+     * [Local Development](#local-development)
+     * [Production Deployment](#production-deployment)
+   * [Heroku](#heroku)
+ * [Screenshots](#screenshots)
+ * [Credits](#credits)
+ * [License](#license)
+
+## Installation
 
 
-## Instructions for Local Development
+### Docker
+
+Docker can be used for both development and production. You're going to need [Docker](https://docs.docker.com/engine/installation/) and [Docker Compose](https://docs.docker.com/compose/install/).
+
+1. Create `data/conf/secrets.json` file. It should contain the following (for example):
+
+```json
+{
+  "secret_key": "some-secret-key",
+  "db_name": "malvo",
+  "db_user": "malvo",
+  "db_host": "localhost",
+  "db_password": "your-psql-user-password",
+  "allowed_hosts": [
+    "127.0.0.1",
+    "localhost"
+  ],
+  "mcqs_duration": 60,
+  "coding_duration": 180
+}
+```
+
+2. Create `data/conf/db.env` with the following:
+
+```
+POSTGRES_DB=malvo
+POSTGRES_USER=malvo
+POSTGRES_PASSWORD=your-psql-user-password
+```
+
+3. Create `data/conf/app.env` with the following:
+
+```
+MALVO_ADMIN_PASSWORD=your-admin-team-password
+```
+
+4. For Local development run:
+
+```bash
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+```
+
+Or, for Production deployment run:
+
+```bash
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up
+```
+
+5. Server should be running at [localhost:8000](http://localhost:8000). Logs for Nginx, Gunicorn and Postgres will be collected in `data/logs/`. `data/db` will contain Postgres DB data.
+
+
+### Simple Installation
+
+#### Local Development
 
 1. Create a virtualenv instance and activate it.
 
@@ -43,23 +105,7 @@ pip install -r requirements.txt
 bower install
 ```
 
-4. Add a `secrets.json` file inside `data/conf`. It should contain the following (for example):
-
-```json
-{
-  "secret_key": "some-secret-key",
-  "db_name": "malvo",
-  "db_user": "malvo",
-  "db_host": "localhost",
-  "db_password": "your-psql-user-password",
-  "allowed_hosts": [
-    "127.0.0.1",
-    "localhost"
-  ],
-  "mcqs_duration": 60,
-  "coding_duration": 180
-}
-```
+4. Add a `secrets.json` file inside `data/conf`. Edit it as explained in Docker installation above.
 
 5. Migrate and create a superuser.
 
@@ -74,7 +120,7 @@ bower install
 ./manage.py runserver
 ```
 
-## Production Deployment
+#### Production Deployment
 
 Collect all the static files inside `data/static_root`:
 
@@ -91,40 +137,7 @@ gunicorn malvo.wsgi:application --name malvo --bind 0.0.0.0:8000 --workers 3
 ```
 
 
-## Docker Support
-
-Docker can be used for both development and production. You're going to need [Docker](https://docs.docker.com/engine/installation/) and [Docker Compose](https://docs.docker.com/compose/install/).
-
-1. Create `data/conf/secrets.json` file as explained in the above segment.
-
-2. Create `data/conf/db.env` with the following:
-
-```
-POSTGRES_DB=malvo
-POSTGRES_USER=malvo
-POSTGRES_PASSWORD=your-psql-user-password
-```
-
-3. Create `data/conf/app.env` with the following:
-
-```
-MALVO_ADMIN_PASSWORD=your-admin-team-password
-```
-
-4. For Local development run:
-
-```bash
-docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
-```
-
-Or, for Production deployment run:
-
-```bash
-docker-compose -f docker-compose.yml -f docker-compose.prod.yml up
-```
-
-
-## Heroku Deployment
+### Heroku
 
 ```bash
 heroku create
@@ -135,7 +148,22 @@ git push heroku master
 heroku run python manage.py migrate
 ```
 
+
+## Screenshots
+
+ - [Screenshot 1](http://imgur.com/44tQMSU)
+ - [Screenshot 2](https://imgur.com/Gve6sqH)
+ - [Screenshot 3](https://imgur.com/ULoGOfw)
+ - [Screenshot 4](https://imgur.com/Yy0JVGs)
+ - [Screenshot 5](https://imgur.com/SrfySex)
+
+
 ## Credits
 
 `data/wait-for-it.sh` has been taken from (unmodified) [vishnubob/wait-for-it](https://github.com/vishnubob/wait-for-it).
+
+
+## License
+
+Please refer to the [LICENSE](LICENSE) file.
 
